@@ -11,6 +11,6 @@ public class IrisMap {
 
     private String imageUrl;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     private Iridologist iridologist;
 }

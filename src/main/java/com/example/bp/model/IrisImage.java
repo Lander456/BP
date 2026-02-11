@@ -11,6 +11,6 @@ public class IrisImage {
 
     private String imageUrl;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     private Patient patient;
 }
