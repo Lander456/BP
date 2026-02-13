@@ -17,6 +17,8 @@ public class Patient extends HumanEntity{
     @Setter
     private String birthNum;
 
+    @Getter
+    @Setter
     @ManyToOne(fetch=FetchType.LAZY)
     private Iridologist iridologist;
 
