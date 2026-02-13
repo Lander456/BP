@@ -1,16 +1,18 @@
 package com.example.bp.DAL.model;
 
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 
 @Entity
-public class IrisImage {
-
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long id;
-
-    private String imageUrl;
+@EqualsAndHashCode(callSuper = true)
+public class IrisImage extends ImageEntity{
 
     @ManyToOne(fetch=FetchType.LAZY)
     private Patient patient;
+
+    protected IrisImage() {};
+
+    public IrisImage(String imageUrl) {
+        super.setImageUrl(imageUrl);
+    }
 }

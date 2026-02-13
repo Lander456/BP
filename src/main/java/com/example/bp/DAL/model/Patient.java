@@ -1,22 +1,31 @@
 package com.example.bp.DAL.model;
 
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-public class Patient {
+@EqualsAndHashCode(callSuper = true)
+public class Patient extends HumanEntity{
 
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long id;
+    @Getter
+    @Setter
+    private Byte age;
 
-    private String firstName;
-    private String lastName;
-    private Short age;
-    private Long birthNum;
+    @Getter
+    @Setter
+    private String birthNum;
 
     @ManyToOne(fetch=FetchType.LAZY)
     private Iridologist iridologist;
 
     protected Patient() {}
 
+    public Patient(String firstName, String lastName, Byte age, String birthNum) {
+        super.setFirstName(firstName);
+        super.setLastName(lastName);
+        this.setAge(age);
+        this.setBirthNum(birthNum);
+    }
 }
