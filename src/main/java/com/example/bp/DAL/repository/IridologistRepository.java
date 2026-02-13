@@ -10,5 +10,6 @@ import java.util.List;
 public interface IridologistRepository extends JpaRepository<Iridologist, Long> {
 
     List<Iridologist> findByFirstName(String firstName);
+    List<Iridologist> findByLastName(String lastName);
 
 }
