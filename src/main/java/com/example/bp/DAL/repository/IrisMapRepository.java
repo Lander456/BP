@@ -1,6 +1,6 @@
-package com.example.bp.repository;
+package com.example.bp.DAL.repository;
 
-import com.example.bp.model.IrisImage;
+import com.example.bp.DAL.model.IrisImage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,9 +1,9 @@
-package com.example.bp.model;
+package com.example.bp.DAL.model;
 
 import jakarta.persistence.*;
 
 @Entity
-public class IrisMap {
+public class IrisImage {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -12,5 +12,5 @@ public class IrisMap {
     private String imageUrl;
 
     @ManyToOne(fetch=FetchType.LAZY)
-    private Iridologist iridologist;
+    private Patient patient;
 }

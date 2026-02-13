@@ -1,4 +1,4 @@
-package com.example.bp.model;
+package com.example.bp.DAL.model;
 
 import jakarta.persistence.*;
 
