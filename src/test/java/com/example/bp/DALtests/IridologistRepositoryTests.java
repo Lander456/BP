@@ -1,8 +1,6 @@
 package com.example.bp.DALtests;
 
 import com.example.bp.DAL.model.Iridologist;
-import com.example.bp.DAL.model.IrisMap;
-import com.example.bp.DAL.model.Patient;
 import com.example.bp.DAL.repository.IridologistRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,32 +26,28 @@ public class IridologistRepositoryTests {
     @Autowired
     private TestEntityManager entityManager;
 
-    /// private Iridologist instance, predefined for ease of use in the tests
-    private final Iridologist janeDoe = new Iridologist("Jane", "Doe");
+    /// private Iridologist instance, predefined in the setUp method for use in the tests
+    private Iridologist janeDoe;
 
-    /// private Iridologist instance, predefined for ease of use in the tests
-    private final Iridologist johnDoe = new Iridologist("John", "Doe");
+    /// private Iridologist instance, predefined in the setUp method for use in the tests
+    private Iridologist johnDoe;
 
-    /// private Iridologist instance, predefined for ease of use in the tests
-    private final Iridologist johnHamcock = new Iridologist("John", "Hamcock");
-
-    /// private Patient instance, predefined for ease of use in the tests
-    private final Patient patientZero = new Patient("Patient", "Zero", (byte) 59, "999999/99");
-
-    /// private IrisMap instance, predefined for ease of use in the tests
-    private final IrisMap irisMap = new IrisMap("someImageUrl");
+    /// private Iridologist instance, predefined in the setUp method for use in the tests
+    private Iridologist johnHamcock;
 
     /// setup method executed before each test to ensure database is reset to this state and populated with certain data
     @BeforeEach
     void setUp() {
-        patientZero.setIridologist(johnDoe);
-        irisMap.setIridologist(johnDoe);
+        janeDoe = new Iridologist("Jane", "Doe");
+        johnDoe = new Iridologist("John", "Doe");
+        johnHamcock = new Iridologist("John", "Hamcock");
 
         entityManager.persist(johnDoe);
         entityManager.persist(janeDoe);
         entityManager.persist(johnHamcock);
-        entityManager.persist(patientZero);
-        entityManager.persist(irisMap);
+
+        entityManager.flush();
+        entityManager.clear();
     }
 
     /**
@@ -67,8 +61,7 @@ public class IridologistRepositoryTests {
     void saveIridologist() {
         Iridologist iridologist = new Iridologist("Jeffrey", "Doe");
 
-        iridologistRepository.save(iridologist);
-        entityManager.flush();
+        iridologistRepository.saveAndFlush(iridologist);
 
         List<Iridologist> found = iridologistRepository.findAll();
         assertThat(found).extracting(Iridologist::getFirstName, Iridologist::getLastName)
@@ -114,8 +107,7 @@ public class IridologistRepositoryTests {
     @Test
     void findById() {
         Iridologist iridologist = new Iridologist("irrelevant", "man");
-        Iridologist saved = iridologistRepository.save(iridologist);
-        entityManager.flush();
+        Iridologist saved = iridologistRepository.saveAndFlush(iridologist);
 
         Optional<Iridologist> found = iridologistRepository.findById(saved.getId());
         assertTrue(found.isPresent());
@@ -133,8 +125,7 @@ public class IridologistRepositoryTests {
         Iridologist iridologist = foundToEdit.getFirst();
 
         iridologist.setFirstName("Amelie");
-        iridologistRepository.save(iridologist);
-        entityManager.flush();
+        iridologistRepository.saveAndFlush(iridologist);
 
         List<Iridologist> foundToCompare = iridologistRepository.findByFirstName("Amelie");
         assertEquals(foundToCompare.getFirst(), iridologist);
@@ -170,12 +161,26 @@ public class IridologistRepositoryTests {
         Iridologist iridologist = foundToEdit.getFirst();
 
         iridologist.setLastName("interestingLastName");
-        iridologistRepository.save(iridologist);
+        Iridologist savedIridologist = iridologistRepository.saveAndFlush(iridologist);
 
-        entityManager.flush();
+        Iridologist foundToCompare = iridologistRepository.findById(savedIridologist.getId())
+                .orElseThrow(() -> new AssertionError("Iridologist not found in DB"));
 
-        List<Iridologist> foundToCompare = iridologistRepository.findByLastName("interestingLastName");
+        assertEquals(foundToCompare, iridologist);
+    }
 
-        assertEquals(foundToCompare.getFirst(), iridologist);
+    /**
+     * This test attempts to delete an iridologist from the database using the IridologistRepository
+     *
+     * @see Iridologist
+     * @see IridologistRepository
+     */
+    @Test
+    void deleteIridologist() {
+        iridologistRepository.delete(johnHamcock);
+        iridologistRepository.flush();
+
+        Optional<Iridologist> iridologistToCheck = iridologistRepository.findById(johnHamcock.getId());
+        assertTrue(iridologistToCheck.isEmpty());
     }
 }
