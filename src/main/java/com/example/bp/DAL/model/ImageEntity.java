@@ -1,14 +1,12 @@
 package com.example.bp.DAL.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @MappedSuperclass
+@EqualsAndHashCode
 public abstract class ImageEntity{
 
     @Id
@@ -18,6 +16,7 @@ public abstract class ImageEntity{
 
     @Getter
     @Setter
+    @Column(unique = true)
     private String imageUrl;
 
 }
