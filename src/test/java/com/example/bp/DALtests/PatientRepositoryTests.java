@@ -4,6 +4,7 @@ import com.example.bp.DAL.model.Iridologist;
 import com.example.bp.DAL.model.Patient;
 import com.example.bp.DAL.repository.PatientRepository;
 import jakarta.persistence.EntityManager;
+import org.hibernate.AssertionFailure;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,11 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -110,5 +112,66 @@ public class PatientRepositoryTests {
                 .containsExactly(
                         tuple(patientZero.getFirstName(), patientZero.getLastName(), patientZero.getAge(), patientZero.getBirthNum(), patientZero.getIridologist())
                 );
+    }
+
+    @Test
+    void updatePatientsFirstName() {
+        Patient patientToUpdate = patientRepository.findById(patientZero.getId())
+                .orElseThrow(() -> new AssertionError("Failed to fetch patient from DB"));
+
+        patientToUpdate.setFirstName("newFirstName");
+        patientRepository.saveAndFlush(patientToUpdate);
+
+        Patient controlPatient = patientRepository.findById(patientToUpdate.getId())
+                .orElseThrow(() -> new AssertionError("Failed to fetch patient from DB"));
+        assertEquals(patientToUpdate, controlPatient);
+    }
+
+    @Test
+    void updatePatientsLastName() {
+        Patient patientToUpdate = patientRepository.findById(patientZero.getId())
+                .orElseThrow(() -> new AssertionError("Failed to fetch patient from DB"));
+
+        patientToUpdate.setLastName("newLastName");
+        patientRepository.saveAndFlush(patientToUpdate);
+
+        Patient controlPatient = patientRepository.findById(patientToUpdate.getId())
+                .orElseThrow(() -> new AssertionError("Failed to fetch patient from DB"));
+        assertEquals(patientToUpdate, controlPatient);
+    }
+
+    @Test
+    void updatePatientsAge() {
+        Patient patientToUpdate = patientRepository.findById(patientZero.getId())
+                .orElseThrow(() -> new AssertionError("Failed to fetch patient from DB"));
+
+        patientToUpdate.setAge((byte) 99);
+        patientRepository.saveAndFlush(patientToUpdate);
+
+        Patient controlPatient = patientRepository.findById(patientToUpdate.getId())
+                .orElseThrow(() -> new AssertionError("Failed to fetch patient from DB"));
+        assertEquals(patientToUpdate, controlPatient);
+    }
+
+    @Test
+    void updatePatientsBirthNum() {
+        Patient patientToUpdate = patientRepository.findById(patientZero.getId())
+                .orElseThrow(() -> new AssertionError("Failed to fetch patient from DB"));
+
+        patientToUpdate.setBirthNum("newBirthNum");
+        patientRepository.saveAndFlush(patientToUpdate);
+
+        Patient controlPatient = patientRepository.findById(patientToUpdate.getId())
+                .orElseThrow(() -> new AssertionError("Failed to fetch patient from DB"));
+        assertEquals(patientToUpdate, controlPatient);
+    }
+
+    @Test
+    void deleteExistingPatient() {
+        patientRepository.delete(patientOne);
+
+        Optional<Patient> deletedPatient = patientRepository.findById(patientOne.getId());
+
+        assertTrue(deletedPatient.isEmpty());
     }
 }
