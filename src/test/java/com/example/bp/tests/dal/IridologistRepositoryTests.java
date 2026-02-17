@@ -1,7 +1,7 @@
-package com.example.bp.tests.DAL;
+package com.example.bp.tests.dal;
 
-import com.example.bp.DAL.model.Iridologist;
-import com.example.bp.DAL.repository.IridologistRepository;
+import com.example.bp.dal.entity.Iridologist;
+import com.example.bp.dal.repository.IridologistRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

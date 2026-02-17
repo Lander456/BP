@@ -1,9 +1,7 @@
-package com.example.bp.DAL.model;
+package com.example.bp.dal.entity;
 
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
 @Entity
 @EqualsAndHashCode(callSuper = true)

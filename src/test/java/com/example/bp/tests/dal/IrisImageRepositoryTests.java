@@ -1,8 +1,8 @@
-package com.example.bp.tests.DAL;
+package com.example.bp.tests.dal;
 
-import com.example.bp.DAL.model.IrisImage;
-import com.example.bp.DAL.model.Patient;
-import com.example.bp.DAL.repository.IrisImageRepository;
+import com.example.bp.dal.entity.IrisImage;
+import com.example.bp.dal.entity.Patient;
+import com.example.bp.dal.repository.IrisImageRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

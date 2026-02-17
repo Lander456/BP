@@ -1,4 +1,4 @@
-package com.example.bp.DAL.model;
+package com.example.bp.dal.entity;
 
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;

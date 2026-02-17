@@ -1,4 +1,4 @@
-package com.example.bp.DAL.model;
+package com.example.bp.dal.entity;
 
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
@@ -7,16 +7,16 @@ import lombok.Setter;
 
 @Entity
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-public class IrisImage extends ImageEntity{
+public class IrisMap extends ImageEntity {
 
     @Getter
     @Setter
     @ManyToOne(fetch=FetchType.LAZY)
-    private Patient patient;
+    private Iridologist iridologist;
 
-    protected IrisImage() {};
+    protected IrisMap() {}
 
-    public IrisImage(String imageUrl) {
+    public IrisMap(String imageUrl) {
         super.setImageUrl(imageUrl);
     }
 }
