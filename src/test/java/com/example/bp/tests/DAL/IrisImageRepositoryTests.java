@@ -1,4 +1,4 @@
-package com.example.bp.DALtests;
+package com.example.bp.tests.DAL;
 
 import com.example.bp.DAL.model.IrisImage;
 import com.example.bp.DAL.model.Patient;

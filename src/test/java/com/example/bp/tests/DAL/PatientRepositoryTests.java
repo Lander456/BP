@@ -1,10 +1,9 @@
-package com.example.bp.DALtests;
+package com.example.bp.tests.DAL;
 
 import com.example.bp.DAL.model.Iridologist;
 import com.example.bp.DAL.model.Patient;
 import com.example.bp.DAL.repository.PatientRepository;
 import jakarta.persistence.EntityManager;
-import org.hibernate.AssertionFailure;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
