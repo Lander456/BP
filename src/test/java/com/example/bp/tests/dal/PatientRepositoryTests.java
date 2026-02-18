@@ -37,7 +37,7 @@ public class PatientRepositoryTests {
     void setUp() {
         patientZero = new Patient("Patient", "Zero", (byte) 80, "99999/99");
         patientOne = new Patient("Patient", "One", (byte) 33, "9999/999");
-        iridologist = new Iridologist("Jane", "Doe");
+        iridologist = new Iridologist("Jane", "Doe", "janedoe", "interestingpass");
 
         patientZero.setIridologist(iridologist);
         patientOne.setIridologist(iridologist);

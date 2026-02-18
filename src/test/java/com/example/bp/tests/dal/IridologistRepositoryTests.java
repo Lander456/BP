@@ -38,9 +38,9 @@ public class IridologistRepositoryTests {
     /// setup method executed before each test to ensure database is reset to this state and populated with certain data
     @BeforeEach
     void setUp() {
-        janeDoe = new Iridologist("Jane", "Doe");
-        johnDoe = new Iridologist("John", "Doe");
-        johnHamcock = new Iridologist("John", "Hamcock");
+        janeDoe = new Iridologist("Jane", "Doe", "janedoe", "interestingpass");
+        johnDoe = new Iridologist("John", "Doe", "johndoe", "interestingpass");
+        johnHamcock = new Iridologist("John", "Hamcock", "johnhamcock", "interestingpass");
 
         entityManager.persist(johnDoe);
         entityManager.persist(janeDoe);
@@ -59,7 +59,7 @@ public class IridologistRepositoryTests {
      */
     @Test
     void saveIridologist() {
-        Iridologist iridologist = new Iridologist("Jeffrey", "Doe");
+        Iridologist iridologist = new Iridologist("Jeffrey", "Doe", "jeffreydoe", "interestingpass");
 
         iridologistRepository.saveAndFlush(iridologist);
 
@@ -106,7 +106,7 @@ public class IridologistRepositoryTests {
      */
     @Test
     void findById() {
-        Iridologist iridologist = new Iridologist("irrelevant", "man");
+        Iridologist iridologist = new Iridologist("irrelevant", "man", "irrelevantman", "interestingpass");
         Iridologist saved = iridologistRepository.saveAndFlush(iridologist);
 
         Optional<Iridologist> found = iridologistRepository.findById(saved.getId());

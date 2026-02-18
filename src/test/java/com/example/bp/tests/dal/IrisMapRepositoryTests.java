@@ -39,8 +39,8 @@ public class IrisMapRepositoryTests {
 
     @BeforeEach
     void setUp() {
-        firstIridologist = new Iridologist("John", "Doe");
-        secondIridologist = new Iridologist("Jane", "Doe");
+        firstIridologist = new Iridologist("John", "Doe", "johndoe", "interestingpass");
+        secondIridologist = new Iridologist("Jane", "Doe", "johndoe", "interestingpass");
         firstIrisMapFirstIridologist = new IrisMap("firstIrisMapUrl");
         secondIrisMapFirstIridologist = new IrisMap("secondIrisMapUrl");
         firstIrisMapSecondIridiologist = new IrisMap("thirdIrisMapUrl");
