@@ -5,14 +5,18 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class IrisImage extends ImageEntity{
 
-    @Getter
-    @Setter
     @ManyToOne(fetch=FetchType.LAZY)
     private Patient patient;
+
+    private String diagnosis;
+
+    private String note;
 
     protected IrisImage() {}
 

@@ -9,6 +9,8 @@ import java.util.List;
 @Repository
 public interface IridologistRepository extends JpaRepository<Iridologist, Long> {
 
+    boolean existsByUsername(String username);
+
     List<Iridologist> findByFirstName(String firstName);
     List<Iridologist> findByLastName(String lastName);
 

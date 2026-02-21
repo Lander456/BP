@@ -22,6 +22,10 @@ public class Patient extends HumanEntity{
     @ManyToOne(fetch=FetchType.LAZY)
     private Iridologist iridologist;
 
+    @Getter
+    @Setter
+    private Boolean sex;
+
     protected Patient() {}
 
     public Patient(String firstName, String lastName, Byte age, String birthNum) {

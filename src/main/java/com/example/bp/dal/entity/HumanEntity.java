@@ -7,19 +7,16 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
+@Setter
 @MappedSuperclass
 @EqualsAndHashCode
 public abstract class HumanEntity{
     @Id
     @GeneratedValue
-    @Getter
     private Long Id;
 
-    @Getter
-    @Setter
     private String firstName;
 
-    @Getter
-    @Setter
     private String lastName;
 }
