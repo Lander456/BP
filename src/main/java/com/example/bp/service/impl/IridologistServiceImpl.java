@@ -56,6 +56,24 @@ public class IridologistServiceImpl implements IridologistService {
     }
 
     @Override
+    public List<IridologistListDto> getByFirstName(String firstName) {
+        List<Iridologist> entities = repository.findByFirstName(firstName);
+        return mapper.toListDtoList(entities);
+    }
+
+    @Override
+    public List<IridologistListDto> getByLastName(String lastName) {
+        List<Iridologist> entities = repository.findByLastName(lastName);
+        return mapper.toListDtoList(entities);
+    }
+
+    @Override
+    public List<IridologistListDto> getByUsername(String username) {
+        List<Iridologist> entities = repository.findByUsername(username);
+        return mapper.toListDtoList(entities);
+    }
+
+    @Override
     public void update(Long id, IridologistUpdateDto dto) {
         Iridologist entity = mapper.toEntity(dto);
         entity.setId(id);

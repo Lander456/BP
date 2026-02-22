@@ -49,8 +49,8 @@ public class IrisImageRepositoryTests {
     /// setup method executed before each test to ensure database is reset to this state and populated with certain data
     @BeforeEach
     void setUp() {
-        patientZero = new Patient("Patient", "Zero", (byte) 69, "999999/99");
-        patientOne = new Patient("Patient", "One", (byte) 50, "999999/99");
+        patientZero = new Patient("Patient", "Zero", (byte) 69, "999999/99", true);
+        patientOne = new Patient("Patient", "One", (byte) 50, "999999/99", false);
         firstIrisImagePatientZero = new IrisImage("irisImageUrl1");
         secondIrisImagePatientZero = new IrisImage("irisImageUrl2");
         firstIrisImagePatientOne = new IrisImage("irisImageUrl3");

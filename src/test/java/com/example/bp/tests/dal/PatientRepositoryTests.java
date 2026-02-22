@@ -35,8 +35,8 @@ public class PatientRepositoryTests {
 
     @BeforeEach
     void setUp() {
-        patientZero = new Patient("Patient", "Zero", (byte) 80, "99999/99");
-        patientOne = new Patient("Patient", "One", (byte) 33, "9999/999");
+        patientZero = new Patient("Patient", "Zero", (byte) 80, "99999/99", true);
+        patientOne = new Patient("Patient", "One", (byte) 33, "9999/999", false);
         iridologist = new Iridologist("Jane", "Doe", "janedoe", "interestingpass");
 
         patientZero.setIridologist(iridologist);
@@ -52,7 +52,7 @@ public class PatientRepositoryTests {
 
     @Test
     void createNewPatient() {
-        Patient newPatient = new Patient("New", "Patient", (byte) 70, "22222/22");
+        Patient newPatient = new Patient("New", "Patient", (byte) 70, "22222/22", true);
         newPatient.setIridologist(iridologist);
 
         patientRepository.saveAndFlush(newPatient);

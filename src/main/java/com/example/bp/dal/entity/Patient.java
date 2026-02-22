@@ -28,10 +28,11 @@ public class Patient extends HumanEntity{
 
     protected Patient() {}
 
-    public Patient(String firstName, String lastName, Byte age, String birthNum) {
+    public Patient(String firstName, String lastName, Byte age, String birthNum, Boolean sex) {
         super.setFirstName(firstName);
         super.setLastName(lastName);
         this.setAge(age);
         this.setBirthNum(birthNum);
+        this.setSex(sex);
     }
 }

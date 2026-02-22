@@ -1,4 +1,6 @@
 package com.example.bp.service.impl;
 
-public class IrisMapServiceImpl {
+import com.example.bp.service.IrisMapService;
+
+public class IrisMapServiceImpl implements IrisMapService {
 }

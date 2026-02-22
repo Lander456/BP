@@ -1,7 +1,6 @@
 package com.example.bp.api.dto;
 
-public record PatientDetailDto(
-        Long id,
+public record PatientCreateDto(
         String firstName,
         String lastName,
         Byte age,
