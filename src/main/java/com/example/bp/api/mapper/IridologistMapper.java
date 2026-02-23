@@ -12,8 +12,8 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface IridologistMapper {
-    public Iridologist toEntity(@Nonnull IridologistCreateDto dto);
-    public Iridologist toEntity(@Nonnull IridologistUpdateDto dto);
-    public IridologistDetailDto toDetailDto(@Nonnull Iridologist entity);
-    public List<IridologistListDto> toListDtoList(List<Iridologist> entities);
+    Iridologist toEntity(@Nonnull IridologistCreateDto dto);
+    Iridologist toEntity(@Nonnull IridologistUpdateDto dto);
+    IridologistDetailDto toDetailDto(@Nonnull Iridologist entity);
+    List<IridologistListDto> toListDtoList(List<Iridologist> entities);
 }

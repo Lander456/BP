@@ -10,6 +10,7 @@ import lombok.Setter;
 @Entity
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class IrisImage extends ImageEntity{
+    //TODO rework IrisImage entity
 
     @ManyToOne(fetch=FetchType.LAZY)
     private Patient patient;
