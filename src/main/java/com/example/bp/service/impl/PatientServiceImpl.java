@@ -52,16 +52,19 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public List<PatientListDto> getByLastName(String lastName) {
-        return List.of();
+        List<Patient> entities = repository.findByLastName(lastName);
+        return mapper.toListDtoList(entities);
     }
 
     @Override
     public void update(Long id, PatientUpdateDto dto) {
-
+        Patient entity = mapper.toEntity(dto);
+        entity.setId(id);
+        repository.save(entity);
     }
 
     @Override
     public void delete(Long id) {
-
+        repository.deleteById(id);
     }
 }

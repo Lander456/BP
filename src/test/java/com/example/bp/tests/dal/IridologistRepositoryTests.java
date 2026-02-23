@@ -2,6 +2,7 @@ package com.example.bp.tests.dal;
 
 import com.example.bp.dal.entity.Iridologist;
 import com.example.bp.dal.repository.IridologistRepository;
+import org.hibernate.AssertionFailure;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -182,5 +183,45 @@ public class IridologistRepositoryTests {
 
         Optional<Iridologist> iridologistToCheck = iridologistRepository.findById(johnHamcock.getId());
         assertTrue(iridologistToCheck.isEmpty());
+    }
+
+    /**
+     * This test attempts to retrieve an Iridologist from the database through their username
+     *
+     * @throws AssertionError either if the Iridologist cannot be found in the database or if the fetched iridologist is
+     * not the one with the username
+     * @see Iridologist
+     * @see IridologistRepository
+     */
+    @Test
+    void getIridologistByUsername() {
+        Iridologist found = iridologistRepository.findByUsername(janeDoe.getUsername())
+                .orElseThrow(() -> new AssertionError("Iridologist not found in DB"));
+
+        assertEquals(janeDoe, found);
+    }
+
+    /**
+     * This test attempts to check whether an iridologist from the database with a given username exists
+     *
+     * @throws AssertionError if it does not find the existing iridologist
+     * @see Iridologist
+     * @see IridologistRepository
+     */
+    @Test
+    void checkExistingIridologistExistenceByUsername() {
+        assertTrue(iridologistRepository.existsByUsername(janeDoe.getUsername()));
+    }
+
+    /**
+     * This test attempts to check whether an iridologist not in the database with a given username exists
+     *
+     * @throws AssertionError if it finds anything when it should find nothing
+     * @see Iridologist
+     * @see IridologistRepository
+     */
+    @Test
+    void checkNonExistentIridologistExistenceByUsername() {
+        assertFalse(iridologistRepository.existsByUsername("interestingUserName"));
     }
 }

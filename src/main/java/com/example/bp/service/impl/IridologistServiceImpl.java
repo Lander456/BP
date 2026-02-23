@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -68,9 +69,10 @@ public class IridologistServiceImpl implements IridologistService {
     }
 
     @Override
-    public List<IridologistListDto> getByUsername(String username) {
-        List<Iridologist> entities = repository.findByUsername(username);
-        return mapper.toListDtoList(entities);
+    public IridologistDetailDto getByUsername(String username) {
+        Iridologist entity = repository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("Iridologist not found with username: " + username));
+        return mapper.toDetailDto(entity);
     }
 
     @Override
