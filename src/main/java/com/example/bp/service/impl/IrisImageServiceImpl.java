@@ -47,13 +47,13 @@ public class IrisImageServiceImpl implements IrisImageService {
         irisImage.setImageUrl("/api/images/scans/" + savedFileName);
 
         IrisImage saved = irisImageRepository.save(irisImage);
-        return mapper.toDetail(saved);
+        return mapper.toDetailDto(saved);
     }
 
     @Override
     public IrisImageDetailDto getById(Long id) {
         return irisImageRepository.findById(id)
-                .map(mapper::toDetail)
+                .map(mapper::toDetailDto)
                 .orElseThrow(() -> new EntityNotFoundException("Iris image not found with ID: " + id));
     }
 

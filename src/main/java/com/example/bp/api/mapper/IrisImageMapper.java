@@ -14,6 +14,6 @@ import java.util.List;
 public interface IrisImageMapper {
     IrisImage toEntity(@Nonnull IrisImageCreateDto dto);
     IrisImage toEntity(@Nonnull IrisImageUpdateDto dto);
-    IrisImageDetailDto toDetail(@Nonnull IrisImage entity);
+    IrisImageDetailDto toDetailDto(@Nonnull IrisImage entity);
     List<IrisImageListDto> toListDtoList(List<IrisImage> entities);
 }
