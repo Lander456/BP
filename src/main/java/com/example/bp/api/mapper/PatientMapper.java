@@ -12,8 +12,8 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface PatientMapper {
-    public Patient toEntity(@Nonnull PatientUpdateDto dto);
-    public Patient toEntity(@Nonnull PatientCreateDto dto);
-    public PatientDetailDto toDetailDto(@Nonnull Patient entity);
-    public List<PatientListDto> toListDtoList(List<Patient> entities);
+    Patient toEntity(@Nonnull PatientUpdateDto dto);
+    Patient toEntity(@Nonnull PatientCreateDto dto);
+    PatientDetailDto toDetailDto(@Nonnull Patient entity);
+    List<PatientListDto> toListDtoList(List<Patient> entities);
 }
