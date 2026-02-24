@@ -6,24 +6,18 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 public class Patient extends HumanEntity{
 
-    @Getter
-    @Setter
     private Byte age;
 
-    @Getter
-    @Setter
     private String birthNum;
 
-    @Getter
-    @Setter
     @ManyToOne(fetch=FetchType.LAZY)
     private Iridologist iridologist;
 
-    @Getter
-    @Setter
     private Boolean sex;
 
     protected Patient() {}
