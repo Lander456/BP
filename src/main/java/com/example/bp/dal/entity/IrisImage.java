@@ -17,6 +17,8 @@ public class IrisImage extends ImageEntity{
 
     private String diagnosis;
 
+    private String eyeSide;
+
     private String note;
 
     protected IrisImage() {}

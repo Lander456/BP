@@ -37,22 +37,34 @@ public class IrisImageServiceImpl implements IrisImageService {
 
         IrisImage irisImage = new IrisImage("/api/images/scans/" + savedFileName);
         irisImage.setPatient(patient);
-        //TODO
-        return null;
+        irisImage.setEyeSide(metadata.eyeSide());
+        irisImage.setNote(metadata.notes());
+
+        irisImage.setOriginalFileName(file.getOriginalFilename());
+        irisImage.setContentType(file.getContentType());
+
+        irisImage.setStoragePath("uploads/scans/" + savedFileName);
+        irisImage.setImageUrl("/api/images/scans/" + savedFileName);
+
+        IrisImage saved = irisImageRepository.save(irisImage);
+        return mapper.toDetail(saved);
     }
 
     @Override
     public IrisImageDetailDto getById(Long id) {
-        return null;
+        return irisImageRepository.findById(id)
+                .map(mapper::toDetail)
+                .orElseThrow(() -> new EntityNotFoundException("Iris image not found with ID: " + id));
     }
 
     @Override
     public List<IrisImageListDto> getByPatientId(Long patientId) {
-        return List.of();
+        List<IrisImage> irisImages = irisImageRepository.findByPatientId(patientId);
+        return mapper.toListDtoList(irisImages);
     }
 
     @Override
     public void delete(Long id) {
-
+        irisImageRepository.deleteById(id);
     }
 }
