@@ -97,7 +97,7 @@ public class IrisImageRepositoryTests {
         IrisImage duplicateIrisImage = new IrisImage(firstIrisImagePatientZero.getImageUrl());
         duplicateIrisImage.setPatient(patientZero);
 
-        assertThrows(DataIntegrityViolationException.class,() -> irisImageRepository.saveAndFlush(duplicateIrisImage));
+        assertThrows(DataIntegrityViolationException.class, () -> irisImageRepository.saveAndFlush(duplicateIrisImage));
     }
 
     /**

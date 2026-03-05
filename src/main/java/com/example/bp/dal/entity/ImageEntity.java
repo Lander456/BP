@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,7 +17,7 @@ public abstract class ImageEntity{
 
     @Id
     @GeneratedValue
-    private Long Id;
+    private Long id;
 
     @Column(unique = true, nullable = false)
     private String imageUrl;

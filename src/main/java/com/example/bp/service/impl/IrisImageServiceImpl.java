@@ -13,6 +13,7 @@ import com.example.bp.service.IrisImageService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,7 +30,7 @@ public class IrisImageServiceImpl implements IrisImageService {
     private final IrisImageRepository irisImageRepository;
 
     @Override
-    public IrisImageDetailDto upload(MultipartFile file, IrisImageCreateDto metadata) {
+    public IrisImageDetailDto upload(MultipartFile file, @NonNull IrisImageCreateDto metadata) {
         Patient patient = patientRepository.findById(metadata.patientId())
                 .orElseThrow(() -> new EntityNotFoundException("Patient not found with ID: " + metadata.patientId()));
 
@@ -59,7 +60,12 @@ public class IrisImageServiceImpl implements IrisImageService {
 
     @Override
     public List<IrisImageListDto> getByPatientId(Long patientId) {
-        List<IrisImage> irisImages = irisImageRepository.findByPatientId(patientId);
+
+        if (!patientRepository.existsById(patientId)) {
+            throw new EntityNotFoundException("Patient with ID: " + patientId + " not found.");
+        }
+
+        List<IrisImage> irisImages = irisImageRepository.findByPatient_Id(patientId);
         return mapper.toListDtoList(irisImages);
     }
 
