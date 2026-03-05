@@ -4,10 +4,7 @@ import com.example.bp.dal.entity.Artifact;
 import com.example.bp.dal.entity.IrisFinding;
 import com.example.bp.dal.entity.IrisImage;
 import com.example.bp.dal.entity.IrisSector;
-import com.example.bp.dal.repository.ArtifactRepository;
 import com.example.bp.dal.repository.IrisFindingRepository;
-import com.example.bp.dal.repository.IrisImageRepository;
-import com.example.bp.dal.repository.IrisSectorRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -28,35 +26,34 @@ public class IrisFindingRepositoryTests {
     IrisFindingRepository irisFindingRepository;
 
     @Autowired
-    IrisImageRepository irisImageRepository;
-
-    @Autowired
-    IrisSectorRepository irisSectorRepository;
-
-    @Autowired
-    ArtifactRepository artifactRepository;
-
-    @Autowired
     TestEntityManager entityManager;
 
     private IrisImage irisImage;
-    private Artifact artifact;
+    private Artifact artifact1;
+    private Artifact artifact2;
     private IrisSector irisSector;
-    private IrisFinding irisFinding;
+    private IrisFinding irisFindingTrue;
+    private IrisFinding irisFindingFalse;
 
     @BeforeEach
     void setUp() {
         irisImage = new IrisImage("imageUrl");
-        artifact = new Artifact("artifact", "artifactDescription", "ARTIFACT-00");
+        artifact1 = new Artifact("artifact1", "artifact1Description", "ARTIFACT-01");
+        artifact2 = new Artifact("artifact2", "artifact2Description", "ARTIFACT-02");
         irisSector = new IrisSector("irisSector", 25.0, 360.0);
-        irisFinding = new IrisFinding(irisImage, irisSector, artifact, "geometryJson");
+        irisFindingTrue = new IrisFinding(irisImage, irisSector, artifact1, "geometryJson");
+        irisFindingFalse = new IrisFinding(irisImage, irisSector, artifact2, "geometryJson");
+        irisFindingFalse.setIsValidated(false);
 
-        irisImage.addFinding(irisFinding);
+
+        irisImage.addFinding(irisFindingTrue);
 
         entityManager.persist(irisImage);
-        entityManager.persist(artifact);
+        entityManager.persist(artifact1);
+        entityManager.persist(artifact2);
         entityManager.persist(irisSector);
-        entityManager.persist(irisFinding);
+        entityManager.persist(irisFindingTrue);
+        entityManager.persist(irisFindingFalse);
 
         entityManager.flush();
         entityManager.clear();
@@ -64,17 +61,17 @@ public class IrisFindingRepositoryTests {
 
     @Test
     void createIrisFinding() {
-        IrisFinding irisFinding = new IrisFinding(irisImage, irisSector, artifact, "anotherGeometryJson");
+        IrisFinding irisFinding = new IrisFinding(irisImage, irisSector, artifact1, "anotherGeometryJson");
 
         assertDoesNotThrow(() -> irisFindingRepository.saveAndFlush(irisFinding));
     }
 
     @Test
     void getExistingIrisFindingById() {
-        IrisFinding foundIrisFinding = irisFindingRepository.findById(irisFinding.getId())
+        IrisFinding foundIrisFinding = irisFindingRepository.findById(irisFindingTrue.getId())
                 .orElseThrow(() -> new AssertionError("Failed to fetch irisFinding from DB"));
 
-        assertEquals(irisFinding, foundIrisFinding);
+        assertEquals(irisFindingTrue, foundIrisFinding);
     }
 
     @Test
@@ -88,6 +85,49 @@ public class IrisFindingRepositoryTests {
     void getIrisFindingByImage() {
         List<IrisFinding> foundIrisFindings = irisFindingRepository.findByIrisImage_Id(irisImage.getId());
 
-        assertTrue(foundIrisFindings.contains(irisFinding));
+        assertTrue(foundIrisFindings.containsAll(List.of(irisFindingTrue, irisFindingFalse)));
+    }
+
+    @Test
+    void getIrisFindingByNotValidated() {
+        List<IrisFinding> foundIrisFindings = irisFindingRepository.findByIsValidatedFalse();
+
+        assertThat(foundIrisFindings).containsExactly(irisFindingFalse);
+    }
+
+    @Test
+    void getIrisFindingByArtifactLabelCode() {
+        List<IrisFinding> foundIrisFindings = irisFindingRepository.findByArtifact_LabelCode(artifact1.getLabelCode());
+
+        assertThat(foundIrisFindings).containsExactly(irisFindingTrue);
+    }
+
+    @Test
+    void updateConfidenceScore() {
+        irisFindingTrue.setConfidenceScore(0.95);
+        irisFindingRepository.saveAndFlush(irisFindingTrue);
+
+        IrisFinding foundIrisFinding = irisFindingRepository.findById(irisFindingTrue.getId())
+                .orElseThrow(() -> new AssertionError("Failed to fetch irisFinding from DB"));
+        assertEquals(0.95, foundIrisFinding.getConfidenceScore());
+    }
+
+    @Test
+    void updateValidation() {
+        irisFindingFalse.setIsValidated(true);
+        irisFindingRepository.saveAndFlush(irisFindingFalse);
+
+        IrisFinding foundIrisFinding = irisFindingRepository.findById(irisFindingFalse.getId())
+                .orElseThrow(() -> new AssertionError("Failed to fetch irisFinding from DB"));
+        assertTrue(foundIrisFinding.getIsValidated());
+    }
+
+    @Test
+    void deleteIrisFinding() {
+        irisFindingRepository.delete(irisFindingTrue);
+        irisFindingRepository.flush();
+
+        Optional<IrisFinding> foundIrisFinding = irisFindingRepository.findById(irisFindingTrue.getId());
+        assertTrue(foundIrisFinding.isEmpty());
     }
 }

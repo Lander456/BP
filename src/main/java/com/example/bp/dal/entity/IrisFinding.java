@@ -25,7 +25,7 @@ public class IrisFinding {
 
     private Double confidenceScore;
 
-    private Boolean isAiGenerated;
+    private Boolean isGenerated;
 
     private Boolean isValidated;
 
@@ -39,7 +39,7 @@ public class IrisFinding {
         this.irisSector = irisSector;
         this.artifact = artifact;
         this.geometryJson = geometryJson;
-        this.isAiGenerated = false;
+        this.isGenerated = false;
         this.confidenceScore = 1.0;
         this.isValidated = true;
     }
