@@ -22,7 +22,7 @@ public abstract class ImageEntity{
     @Column(unique = true, nullable = false)
     private String imageUrl;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String storagePath;
 
     private String originalFileName;
