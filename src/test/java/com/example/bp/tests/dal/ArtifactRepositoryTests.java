@@ -10,6 +10,7 @@ import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -59,10 +60,39 @@ public class ArtifactRepositoryTests {
     }
 
     @Test
-    void getNonExistentArtifact() {
+    void getNonExistentArtifactById() {
         Optional<Artifact> artifact = artifactRepository.findById((long) 9999);
 
         assertTrue(artifact.isEmpty());
+    }
+
+    @Test
+    void getArtifactByLabelCode() {
+        Artifact artifact = artifactRepository.findByLabelCode(artifact1.getLabelCode())
+                .orElseThrow(() -> new AssertionError("Failed to fetch artifact from DB"));
+
+        assertEquals(artifact1, artifact);
+    }
+
+    @Test
+    void getNonExistentArtifactByLabelCode() {
+        Optional<Artifact> artifact = artifactRepository.findByLabelCode("madeUpLabelCode");
+
+        assertTrue(artifact.isEmpty());
+    }
+
+    @Test
+    void getArtifactByName() {
+        List<Artifact> artifacts = artifactRepository.findByName(artifact1.getName());
+
+        assertTrue(artifacts.contains(artifact1));
+    }
+
+    @Test
+    void getNonExistentArtifactByName() {
+        List<Artifact> artifacts = artifactRepository.findByName("madeUpName");
+
+        assertTrue(artifacts.isEmpty());
     }
 
     @Test

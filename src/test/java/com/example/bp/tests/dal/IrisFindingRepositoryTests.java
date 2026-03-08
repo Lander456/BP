@@ -38,6 +38,7 @@ public class IrisFindingRepositoryTests {
     @BeforeEach
     void setUp() {
         irisImage = new IrisImage("imageUrl");
+        irisImage.setStoragePath("imageStoragePath");
         artifact1 = new Artifact("artifact1", "artifact1Description", "ARTIFACT-01");
         artifact2 = new Artifact("artifact2", "artifact2Description", "ARTIFACT-02");
         irisSector = new IrisSector("irisSector", 25.0, 360.0);

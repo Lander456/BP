@@ -35,38 +35,43 @@ public class IrisImageRepositoryTests {
     private Patient patientOne;
 
     /// private IrisImage instance, predefined inside the setUp method for use in tests
-    private IrisImage firstIrisImagePatientZero;
+    private IrisImage image1PatientZero;
 
     /// private IrisImage instance, predefined inside the setUp method for use in tests
-    private IrisImage secondIrisImagePatientZero;
+    private IrisImage image2PatientZero;
 
     /// private IrisImage instance, predefined inside the setUp method for use in tests
-    private IrisImage firstIrisImagePatientOne;
+    private IrisImage image1PatientOne;
 
     /// private IrisImage instance, predefined inside the setUp method for use in tests
-    private IrisImage secondIrisImagePatientOne;
+    private IrisImage image2PatientOne;
 
     /// setup method executed before each test to ensure database is reset to this state and populated with certain data
     @BeforeEach
     void setUp() {
         patientZero = new Patient("Patient", "Zero", (byte) 69, "999999/99", true);
         patientOne = new Patient("Patient", "One", (byte) 50, "999999/99", false);
-        firstIrisImagePatientZero = new IrisImage("irisImageUrl1");
-        secondIrisImagePatientZero = new IrisImage("irisImageUrl2");
-        firstIrisImagePatientOne = new IrisImage("irisImageUrl3");
-        secondIrisImagePatientOne = new IrisImage("irisImageUrl4");
+        image1PatientZero = new IrisImage("irisImageUrl1");
+        image2PatientZero = new IrisImage("irisImageUrl2");
+        image1PatientOne = new IrisImage("irisImageUrl3");
+        image2PatientOne = new IrisImage("irisImageUrl4");
 
-        firstIrisImagePatientZero.setPatient(patientZero);
-        secondIrisImagePatientZero.setPatient(patientZero);
-        firstIrisImagePatientOne.setPatient(patientOne);
-        secondIrisImagePatientOne.setPatient(patientOne);
+        image1PatientZero.setPatient(patientZero);
+        image2PatientZero.setPatient(patientZero);
+        image1PatientOne.setPatient(patientOne);
+        image2PatientOne.setPatient(patientOne);
+
+        image1PatientZero.setStoragePath("firstImageFirstPatientStorage");
+        image2PatientZero.setStoragePath("secondImageFirstPatientStorage");
+        image1PatientOne.setStoragePath("firstImageSecondPatientStorage");
+        image2PatientOne.setStoragePath("secondImageSecondPatientStorage");
 
         entityManager.persist(patientZero);
         entityManager.persist(patientOne);
-        entityManager.persist(firstIrisImagePatientZero);
-        entityManager.persist(secondIrisImagePatientZero);
-        entityManager.persist(firstIrisImagePatientOne);
-        entityManager.persist(secondIrisImagePatientOne);
+        entityManager.persist(image1PatientZero);
+        entityManager.persist(image2PatientZero);
+        entityManager.persist(image1PatientOne);
+        entityManager.persist(image2PatientOne);
 
         entityManager.flush();
         entityManager.clear();
@@ -81,6 +86,8 @@ public class IrisImageRepositoryTests {
     @Test
     void saveUniqueIrisImage() {
         IrisImage irisImage = new IrisImage("newImageUrl");
+
+        irisImage.setStoragePath("newStorage");
         irisImage.setPatient(patientZero);
 
         assertDoesNotThrow(() -> irisImageRepository.saveAndFlush(irisImage));
@@ -94,7 +101,7 @@ public class IrisImageRepositoryTests {
      */
     @Test
     void saveDuplicateImage() {
-        IrisImage duplicateIrisImage = new IrisImage(firstIrisImagePatientZero.getImageUrl());
+        IrisImage duplicateIrisImage = new IrisImage(image1PatientZero.getImageUrl());
         duplicateIrisImage.setPatient(patientZero);
 
         assertThrows(DataIntegrityViolationException.class, () -> irisImageRepository.saveAndFlush(duplicateIrisImage));
@@ -119,10 +126,10 @@ public class IrisImageRepositoryTests {
                         IrisImage::getImageUrl
                 )
                 .containsExactlyInAnyOrder(
-                        tuple(patientZero.getFirstName(), patientZero.getLastName(), patientZero.getAge(), patientZero.getBirthNum(), firstIrisImagePatientZero.getImageUrl()),
-                        tuple(patientOne.getFirstName(), patientOne.getLastName(), patientOne.getAge(), patientOne.getBirthNum(), firstIrisImagePatientOne.getImageUrl()),
-                        tuple(patientZero.getFirstName(), patientZero.getLastName(), patientZero.getAge(), patientZero.getBirthNum(), secondIrisImagePatientZero.getImageUrl()),
-                        tuple(patientOne.getFirstName(), patientOne.getLastName(), patientOne.getAge(), patientOne.getBirthNum(), secondIrisImagePatientOne.getImageUrl())
+                        tuple(patientZero.getFirstName(), patientZero.getLastName(), patientZero.getAge(), patientZero.getBirthNum(), image1PatientZero.getImageUrl()),
+                        tuple(patientOne.getFirstName(), patientOne.getLastName(), patientOne.getAge(), patientOne.getBirthNum(), image1PatientOne.getImageUrl()),
+                        tuple(patientZero.getFirstName(), patientZero.getLastName(), patientZero.getAge(), patientZero.getBirthNum(), image2PatientZero.getImageUrl()),
+                        tuple(patientOne.getFirstName(), patientOne.getLastName(), patientOne.getAge(), patientOne.getBirthNum(), image2PatientOne.getImageUrl())
                 );
     }
 
@@ -134,10 +141,10 @@ public class IrisImageRepositoryTests {
      */
     @Test
     void getIrisImageById() {
-        IrisImage irisImage = irisImageRepository.findById(firstIrisImagePatientZero.getId())
+        IrisImage irisImage = irisImageRepository.findById(image1PatientZero.getId())
                 .orElseThrow(() -> new AssertionError("Failed to fetch irisImage"));
 
-        assertEquals(irisImage, firstIrisImagePatientZero);
+        assertEquals(irisImage, image1PatientZero);
     }
 
     /**
@@ -149,13 +156,13 @@ public class IrisImageRepositoryTests {
      */
     @Test
     void updateIrisImageUrl() {
-        IrisImage irisImage = irisImageRepository.findById(firstIrisImagePatientZero.getId())
+        IrisImage irisImage = irisImageRepository.findById(image1PatientZero.getId())
                 .orElseThrow(() -> new AssertionError("Failed to fetch irisImage"));
         irisImage.setImageUrl("newImageUrl");
 
         irisImageRepository.saveAndFlush(irisImage);
 
-        IrisImage irisImageToCompare = irisImageRepository.findById(firstIrisImagePatientZero.getId())
+        IrisImage irisImageToCompare = irisImageRepository.findById(image1PatientZero.getId())
                 .orElseThrow(() -> new AssertionError("Failed to fetch irisImage"));
         assertEquals(irisImage.getImageUrl(), irisImageToCompare.getImageUrl());
     }
@@ -168,10 +175,10 @@ public class IrisImageRepositoryTests {
      */
     @Test
     void deleteIrisImage() {
-        irisImageRepository.delete(firstIrisImagePatientZero);
+        irisImageRepository.delete(image1PatientZero);
         irisImageRepository.flush();
 
-        Optional<IrisImage> irisImage = irisImageRepository.findById(firstIrisImagePatientZero.getId());
+        Optional<IrisImage> irisImage = irisImageRepository.findById(image1PatientZero.getId());
         assertTrue(irisImage.isEmpty());
     }
 }

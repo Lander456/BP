@@ -11,8 +11,10 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -26,16 +28,16 @@ public class IrisMapRepositoryTests {
     private IrisMapRepository irisMapRepository;
 
     /// predeclared IrisMap instance, defined inside the setUp method for use in tests
-    private IrisMap firstIrisMapFirstIridologist;
+    private IrisMap irisMap1;
 
     /// predeclared IrisMap instance, defined inside the setUp method for use in tests
-    private IrisMap secondIrisMapFirstIridologist;
+    private IrisMap irisMap2;
 
     /// predeclared IrisMap instance, defined inside the setUp method for use in tests
-    private IrisMap firstIrisMapSecondIridiologist;
+    private IrisMap irisMap3;
 
     /// predeclared IrisMap instance, defined inside the setUp method for use in tests
-    private IrisMap secondIrisMapSecondIridologist;
+    private IrisMap irisMap4;
 
     /// predeclared Iridologist instance, defined inside the setUp method for use in tests
     private Iridologist firstIridologist;
@@ -48,22 +50,27 @@ public class IrisMapRepositoryTests {
     void setUp() {
         firstIridologist = new Iridologist("John", "Doe", "johndoe", "interestingpass");
         secondIridologist = new Iridologist("Jane", "Doe", "janedoe", "interestingpass");
-        firstIrisMapFirstIridologist = new IrisMap("firstIrisMapUrl");
-        secondIrisMapFirstIridologist = new IrisMap("secondIrisMapUrl");
-        firstIrisMapSecondIridiologist = new IrisMap("thirdIrisMapUrl");
-        secondIrisMapSecondIridologist = new IrisMap("fourthIrisMapUrl");
+        irisMap1 = new IrisMap("firstIrisMapUrl");
+        irisMap2 = new IrisMap("secondIrisMapUrl");
+        irisMap3 = new IrisMap("thirdIrisMapUrl");
+        irisMap4 = new IrisMap("fourthIrisMapUrl");
 
-        firstIrisMapFirstIridologist.setIridologist(firstIridologist);
-        secondIrisMapFirstIridologist.setIridologist(secondIridologist);
-        firstIrisMapSecondIridiologist.setIridologist(secondIridologist);
-        secondIrisMapSecondIridologist.setIridologist(secondIridologist);
+        irisMap1.setStoragePath("firstMapStoragePath");
+        irisMap2.setStoragePath("secondMapStoragePath");
+        irisMap3.setStoragePath("thirdMapStoragePath");
+        irisMap4.setStoragePath("fourthMapStoragePath");
+
+        irisMap1.setIridologist(firstIridologist);
+        irisMap2.setIridologist(firstIridologist);
+        irisMap3.setIridologist(secondIridologist);
+        irisMap4.setIridologist(secondIridologist);
 
         entityManager.persist(firstIridologist);
         entityManager.persist(secondIridologist);
-        entityManager.persist(firstIrisMapFirstIridologist);
-        entityManager.persist(secondIrisMapFirstIridologist);
-        entityManager.persist(firstIrisMapSecondIridiologist);
-        entityManager.persist(secondIrisMapSecondIridologist);
+        entityManager.persist(irisMap1);
+        entityManager.persist(irisMap2);
+        entityManager.persist(irisMap3);
+        entityManager.persist(irisMap4);
 
         entityManager.flush();
         entityManager.clear();
@@ -79,6 +86,7 @@ public class IrisMapRepositoryTests {
     @Test
     void saveNewIrisMap() {
         IrisMap newIrisMap = new IrisMap("newIrisMapLink");
+        newIrisMap.setStoragePath("someStoragePath");
 
         IrisMap savedIrisMap = irisMapRepository.save(newIrisMap);
 
@@ -94,8 +102,9 @@ public class IrisMapRepositoryTests {
      */
     @Test
     void saveDuplicateIrisMap() {
-        IrisMap duplicateIrisMap = new IrisMap(firstIrisMapFirstIridologist.getImageUrl());
+        IrisMap duplicateIrisMap = new IrisMap(irisMap1.getImageUrl());
         duplicateIrisMap.setIridologist(firstIridologist);
+        duplicateIrisMap.setStoragePath("duplicateStoragePath");
 
         assertThrows(DataIntegrityViolationException.class, () -> irisMapRepository.saveAndFlush(duplicateIrisMap));
     }
@@ -111,10 +120,10 @@ public class IrisMapRepositoryTests {
      */
     @Test
     void getExistingIrisMap() {
-        IrisMap fetchedIrisMap = irisMapRepository.findById(firstIrisMapFirstIridologist.getId())
+        IrisMap fetchedIrisMap = irisMapRepository.findById(irisMap1.getId())
                 .orElseThrow(() -> new AssertionError("Failed to fetch IrisMap from DB"));
 
-        assertEquals(firstIrisMapFirstIridologist, fetchedIrisMap);
+        assertEquals(irisMap1, fetchedIrisMap);
     }
 
     /**
@@ -132,6 +141,38 @@ public class IrisMapRepositoryTests {
         assertTrue(nonExistentIrisMap.isEmpty());
     }
 
+    @Test
+    void getIrisMapByIridologist() {
+        List<IrisMap> irisMaps = irisMapRepository.findByIridologistId(firstIridologist.getId());
+
+        assertThat(irisMaps).containsExactlyInAnyOrder(irisMap1, irisMap2);
+    }
+
+    @Test
+    void getIrisMapByImageUrl() {
+        IrisMap irisMap = irisMapRepository.findByImageUrl(irisMap1.getImageUrl())
+                .orElseThrow(() -> new AssertionError("Failed to fetch irisMap from DB"));
+
+        assertEquals(irisMap1, irisMap);
+    }
+
+    @Test
+    void getNonExistentIrisMapByImageUrl() {
+        Optional<IrisMap> irisMap = irisMapRepository.findByImageUrl("madeUpImageUrl");
+
+        assertTrue(irisMap.isEmpty());
+    }
+
+    @Test
+    void tryExistsWithExistingIrisMap() {
+        assertTrue(irisMapRepository.existsByImageUrl(irisMap1.getImageUrl()));
+    }
+
+    @Test
+    void tryExistsWithNonExistentIrisMap() {
+        assertFalse(irisMapRepository.existsByImageUrl("madeUpImageUrl"));
+    }
+
     /**
      * This test attempts to update an IrisMap in the database
      *
@@ -141,13 +182,13 @@ public class IrisMapRepositoryTests {
      */
     @Test
     void updateExistingIrisMap() {
-        IrisMap editedIrisMap = irisMapRepository.findById(firstIrisMapFirstIridologist.getId())
+        IrisMap editedIrisMap = irisMapRepository.findById(irisMap1.getId())
                 .orElseThrow(() -> new AssertionError("Failed to fetch IrisMap from DB"));
 
         editedIrisMap.setIridologist(secondIridologist);
         irisMapRepository.saveAndFlush(editedIrisMap);
 
-        IrisMap fetchedIrisMap = irisMapRepository.findById(firstIrisMapFirstIridologist.getId())
+        IrisMap fetchedIrisMap = irisMapRepository.findById(irisMap1.getId())
                 .orElseThrow(() -> new AssertionError("Failed to fetch IrisMap from DB"));
         assertEquals(editedIrisMap, fetchedIrisMap);
     }
@@ -161,9 +202,9 @@ public class IrisMapRepositoryTests {
      */
     @Test
     void deleteIrisMap() {
-        irisMapRepository.delete(secondIrisMapSecondIridologist);
+        irisMapRepository.delete(irisMap4);
 
-        Optional<IrisMap> fetchedIrisMap = irisMapRepository.findById(secondIrisMapSecondIridologist.getId());
+        Optional<IrisMap> fetchedIrisMap = irisMapRepository.findById(irisMap4.getId());
 
         assertTrue(fetchedIrisMap.isEmpty());
     }

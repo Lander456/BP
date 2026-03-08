@@ -11,6 +11,7 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,9 +38,10 @@ public class IrisSectorRepositoryTests {
     void setUp() {
         irisSector1 = new IrisSector("irisSectorOne", 0.0, 270.0);
         irisMap1 = new IrisMap("imageUrl");
+        irisMap1.setStoragePath("firstMapStoragePath");
 
         irisSector1.setIrisMap(irisMap1);
-        irisMap1.setSectors(List.of(irisSector1));
+        irisMap1.setSectors(new ArrayList<IrisSector>(List.of(irisSector1)));
 
         entityManager.persist(irisMap1);
         entityManager.persist(irisSector1);
@@ -119,11 +121,9 @@ public class IrisSectorRepositoryTests {
 
     @Test
     void updateIrisSectorIrisMap() {
-        irisMap1.clearSectors();
-        irisMapRepository.saveAndFlush(irisMap1);
 
         IrisMap newIrisMap = new IrisMap("newIrisMapUrl");
-        newIrisMap.setSectors(List.of(irisSector1));
+        newIrisMap.setStoragePath("newStoragePath");
         irisMapRepository.saveAndFlush(newIrisMap);
 
         irisSector1.setIrisMap(newIrisMap);
