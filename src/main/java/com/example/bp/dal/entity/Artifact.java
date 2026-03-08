@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.jspecify.annotations.NonNull;
 
 @Entity
 @Getter
@@ -27,6 +28,10 @@ public class Artifact {
     public Artifact(String name, String description, String labelCode) {
         this.name = name;
         this.description = description;
-        this.labelCode = labelCode;
+        this.labelCode = (labelCode != null) ? labelCode : generatedUserCode(name);
+    }
+
+    private @NonNull String generatedUserCode(@NonNull String labelName) {
+        return "USR-" + labelName.toUpperCase().replace(" ", "_") + "-" + java.util.UUID.randomUUID().toString().substring(0, 8);
     }
 }
