@@ -164,6 +164,13 @@ public class PatientRepositoryTests {
                 );
     }
 
+    @Test
+    void getPatientsBySex() {
+        List<Patient> foundPatients = patientRepository.findBySex(true);
+
+        assertThat(foundPatients).containsExactlyInAnyOrder(patientZero);
+    }
+
     /**
      * This test attempts to fetch a patient from the database and update their first name, then save them back in the
      * database
