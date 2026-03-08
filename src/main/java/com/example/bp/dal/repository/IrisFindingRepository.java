@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface IrisFindingRepository extends JpaRepository<IrisFinding, Long> {
     List<IrisFinding> findByIrisImage_Id(Long imageId);
-    List<IrisFinding> findByIsValidatedFalse();
+    List<IrisFinding> findByIsValidated(Boolean isValidated);
     List<IrisFinding> findByArtifact_LabelCode(String labelCode);
 }

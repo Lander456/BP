@@ -90,10 +90,17 @@ public class IrisFindingRepositoryTests {
     }
 
     @Test
-    void getIrisFindingByNotValidated() {
-        List<IrisFinding> foundIrisFindings = irisFindingRepository.findByIsValidatedFalse();
+    void getIrisFindingByValidatedFalse() {
+        List<IrisFinding> foundIrisFindings = irisFindingRepository.findByIsValidated(false);
 
         assertThat(foundIrisFindings).containsExactly(irisFindingFalse);
+    }
+
+    @Test
+    void getIrisFindingByValidatedTrue() {
+        List<IrisFinding> foundIrisFindings = irisFindingRepository.findByIsValidated(true);
+
+        assertThat(foundIrisFindings).contains(irisFindingTrue);
     }
 
     @Test
