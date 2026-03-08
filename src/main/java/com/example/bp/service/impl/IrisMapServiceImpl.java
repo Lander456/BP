@@ -101,9 +101,6 @@ public class IrisMapServiceImpl implements IrisMapService {
 
     @Override
     public void delete(Long id) {
-        IrisMap irisMap = irisMapRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Failed to fetch irisMap from DB with id: " + id));
-
-        irisMapRepository.delete(irisMap);
+        irisMapRepository.deleteById(id);
     }
 }

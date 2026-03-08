@@ -69,9 +69,6 @@ public class ArtifactServiceImpl implements ArtifactService {
 
     @Override
     public void delete(Long id) {
-        Artifact artifact = artifactRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Failed to fetch artifact from DB with id: " + id));
-
-        artifactRepository.delete(artifact);
+        artifactRepository.deleteById(id);
     }
 }
