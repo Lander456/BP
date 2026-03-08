@@ -3,6 +3,7 @@ package com.example.bp.tests.dal;
 import com.example.bp.dal.entity.IrisImage;
 import com.example.bp.dal.entity.Patient;
 import com.example.bp.dal.repository.IrisImageRepository;
+import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -145,6 +147,41 @@ public class IrisImageRepositoryTests {
                 .orElseThrow(() -> new AssertionError("Failed to fetch irisImage"));
 
         assertEquals(irisImage, image1PatientZero);
+    }
+
+    @Test
+    void getIrisImagesUploadedAfterYesterday() {
+        List<IrisImage> irisImages = irisImageRepository.findByUploadedAtAfter(LocalDateTime.now().minusDays(1));
+
+        assertThat(irisImages).containsExactlyInAnyOrder(image1PatientZero, image2PatientZero, image1PatientOne, image2PatientOne);
+    }
+
+    @Test
+    void getIrisImagesUploadedAfterTomorrow() {
+        List<IrisImage> irisImages = irisImageRepository.findByUploadedAtAfter(LocalDateTime.now().plusDays(1));
+
+        assertTrue(irisImages.isEmpty());
+    }
+
+    @Test
+    void getIrisImagesUploadedBeforeYesterday() {
+        List<IrisImage> irisImages = irisImageRepository.findByUploadedAtBefore(LocalDateTime.now().minusDays(1));
+
+        assertTrue(irisImages.isEmpty());
+    }
+
+    @Test
+    void getIrisImagesUploadedBeforeTomorrow() {
+        List<IrisImage> irisImages = irisImageRepository.findByUploadedAtBefore(LocalDateTime.now().plusDays(1));
+
+        assertThat(irisImages).contains(image1PatientZero, image2PatientZero, image1PatientOne, image2PatientOne);
+    }
+
+    @Test
+    void getIrisImagesUploadedBetweenYesterdayAndTomorrow() {
+        List<IrisImage> irisImages = irisImageRepository.findByUploadedAtBetween(LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1));
+
+        assertThat(irisImages).contains(image1PatientZero, image2PatientZero, image1PatientOne, image2PatientOne);
     }
 
     /**

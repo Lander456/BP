@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,5 +30,7 @@ public abstract class ImageEntity{
 
     private String contentType;
 
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
     private LocalDateTime uploadedAt;
 }
