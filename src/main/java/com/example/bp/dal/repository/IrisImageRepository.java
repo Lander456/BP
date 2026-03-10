@@ -5,7 +5,6 @@ import com.example.bp.api.dto.IrisImageDetailDto;
 import com.example.bp.api.dto.IrisImageUpdateDto;
 import com.example.bp.dal.entity.IrisImage;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;

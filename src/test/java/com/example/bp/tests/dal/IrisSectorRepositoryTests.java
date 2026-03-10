@@ -73,6 +73,35 @@ public class IrisSectorRepositoryTests {
     }
 
     @Test
+    void getIrisSectorByExistingMapIdAndName() {
+        IrisSector irisSector = irisSectorRepository.findByIrisMapIdAndName(irisSector1.getIrisMap().getId(), irisSector1.getName())
+                .orElseThrow(() -> new AssertionError("Failed to fetch irisSector from DB"));
+
+        assertEquals(irisSector1, irisSector);
+    }
+
+    @Test
+    void getIrisSectorByNonExistentMapIdAndName() {
+        Optional<IrisSector> irisSector = irisSectorRepository.findByIrisMapIdAndName((long) 9999, "madeUpName");
+
+        assertTrue(irisSector.isEmpty());
+    }
+
+    @Test
+    void getIrisSectorByNonExistentMapIdAndExistingName() {
+        Optional<IrisSector> irisSector = irisSectorRepository.findByIrisMapIdAndName((long) 9999, irisSector1.getName());
+
+        assertTrue(irisSector.isEmpty());
+    }
+
+    @Test
+    void getIrisSectorByExistingMapIdAndNonExistentName() {
+        Optional<IrisSector> irisSector = irisSectorRepository.findByIrisMapIdAndName(irisSector1.getIrisMap().getId(), "madeUpName");
+
+        assertTrue(irisSector.isEmpty());
+    }
+
+    @Test
     void getExistingIrisSectorByMapId() {
         List<IrisSector> irisSectors = irisSectorRepository.findByIrisMapId(irisMap1.getId());
 
