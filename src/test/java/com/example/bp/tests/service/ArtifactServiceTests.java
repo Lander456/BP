@@ -1,6 +1,8 @@
 package com.example.bp.tests.service;
 
+import com.example.bp.api.dto.ArtifactCreateDto;
 import com.example.bp.api.dto.ArtifactDetailDto;
+import com.example.bp.api.dto.ArtifactUpdateDto;
 import com.example.bp.api.mapper.ArtifactMapper;
 import com.example.bp.dal.entity.Artifact;
 import com.example.bp.dal.repository.ArtifactRepository;
@@ -11,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Optional;
 
@@ -71,5 +74,68 @@ public class ArtifactServiceTests {
 
         verify(artifactRepository).findByLabelCode(labelCode);
         verify(artifactMapper).toDetailDto(existingArtifact);
+    }
+
+    @Test
+    void getNonExistentArtifactByLabelCode() {
+        String labelCode = "madeUp";
+
+        when(artifactRepository.findByLabelCode(labelCode)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> {
+            artifactService.getByLabelCode(labelCode);
+        });
+
+        verifyNoInteractions(artifactMapper);
+    }
+
+    @Test
+    void createNewArtifact() {
+        ArtifactCreateDto dto = new ArtifactCreateDto("newArtifactName", "newArtifactDescription", "USR-NEW-ARTIFACT");
+        Artifact newArtifact = new Artifact(dto.name(), dto.description(), dto.labelCode());
+        Artifact savedArtifact = newArtifact;
+        savedArtifact.setId(1L);
+
+        when(artifactMapper.toEntity(dto)).thenReturn(newArtifact);
+        when(artifactRepository.save(newArtifact)).thenReturn(savedArtifact);
+        when(artifactMapper.toDetailDto(savedArtifact)).thenReturn(new ArtifactDetailDto(savedArtifact.getId(), savedArtifact.getName(), savedArtifact.getDescription()));
+
+        artifactService.create(dto);
+
+        verify(artifactMapper).toEntity(dto);
+        verify(artifactRepository).save(newArtifact);
+        verify(artifactMapper).toDetailDto(savedArtifact);
+    }
+
+    @Test
+    void createDuplicateLabelCodeArtifact() {
+        ArtifactCreateDto dto = new ArtifactCreateDto("duplicateArtifactName", "duplicateArtifactDescription", "duplicateLabelCode");
+        Artifact duplicateArtifact = new Artifact(dto.name(), dto.description(), dto.labelCode());
+
+        when(artifactMapper.toEntity(dto)).thenReturn(duplicateArtifact);
+        when(artifactRepository.save(duplicateArtifact)).thenThrow(DataIntegrityViolationException.class);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            artifactService.create(dto);
+        });
+
+        verify(artifactMapper).toEntity(dto);
+        verify(artifactRepository).save(duplicateArtifact);
+        verifyNoMoreInteractions(artifactMapper);
+        verifyNoMoreInteractions(artifactRepository);
+    }
+
+    @Test
+    void updateExistingArtifact() {
+        ArtifactUpdateDto dto = new ArtifactUpdateDto(1L, "newName", "newDescription");
+        Artifact existingArtifact = new Artifact("existingArtifactName", "existingArtifactDescription", "SYS-ARTIFACT-01");
+        Artifact artifactUpdate = new Artifact(dto.name(), dto.description(), null);
+        Artifact updatedArtifact = new Artifact(dto.name(), dto.description(), existingArtifact.getLabelCode());
+
+        when(artifactMapper.toEntity(dto)).thenReturn(artifactUpdate);
+        when(artifactRepository.save(artifactUpdate)).thenReturn(updatedArtifact);
+        when(artifactMapper.toDetailDto(updatedArtifact)).thenReturn(new ArtifactDetailDto(1L, updatedArtifact.getName(), updatedArtifact.getDescription()));
+
+        artifactService.update(dto);
     }
 }

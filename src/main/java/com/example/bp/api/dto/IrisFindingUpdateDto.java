@@ -8,5 +8,4 @@ public record IrisFindingUpdateDto(
         Long artifactId,
         String geometryJson,
         Boolean isValidated
-) {
-}
+) { }
