@@ -1,3 +1,72 @@
 {
+  "mapName": "Bernard Jensen Standard - Left Eye Full",
+  "eyeSide": "LEFT",
+  "description": "Full topographical digitization of the 1981 Jensen Left Iris Chart.",
+  "sectors": [
 
+    { "name": "Stomach", "startAngle": 0.0, "endAngle": 360.0, "innerRadius": 0.15, "outerRadius": 0.28 },
+    { "name": "Small Intestines", "startAngle": 0.0, "endAngle": 360.0, "innerRadius": 0.28, "outerRadius": 0.35 },
+
+
+    { "name": "Animation Life", "startAngle": 265.0, "endAngle": 275.0, "innerRadius": 0.35, "outerRadius": 1.0 },
+    { "name": "Cerebrum Motor", "startAngle": 240.0, "endAngle": 265.0, "innerRadius": 0.45, "outerRadius": 1.0 },
+    { "name": "Psychological Brain", "startAngle": 240.0, "endAngle": 270.0, "innerRadius": 0.85, "outerRadius": 1.0 },
+
+
+    { "name": "Cerebrum Sensory", "startAngle": 270.0, "endAngle": 300.0, "innerRadius": 0.45, "outerRadius": 1.0 },
+    { "name": "Equilibrium / Dizziness Center", "startAngle": 285.0, "endAngle": 295.0, "innerRadius": 0.50, "outerRadius": 0.75 },
+    { "name": "Medulla", "startAngle": 295.0, "endAngle": 305.0, "innerRadius": 0.40, "outerRadius": 0.60 },
+
+
+    { "name": "Ear", "startAngle": 305.0, "endAngle": 320.0, "innerRadius": 0.75, "outerRadius": 1.0 },
+    { "name": "Mastoid", "startAngle": 310.0, "endAngle": 325.0, "innerRadius": 0.55, "outerRadius": 0.75 },
+    { "name": "Neck", "startAngle": 320.0, "endAngle": 335.0, "innerRadius": 0.75, "outerRadius": 1.0 },
+    { "name": "Shoulder", "startAngle": 330.0, "endAngle": 345.0, "innerRadius": 0.65, "outerRadius": 0.85 },
+
+
+    { "name": "Heart", "startAngle": 350.0, "endAngle": 10.0, "innerRadius": 0.40, "outerRadius": 0.60 },
+    { "name": "Bronchials", "startAngle": 345.0, "endAngle": 15.0, "innerRadius": 0.35, "outerRadius": 0.45 },
+    { "name": "Lung (Lower)", "startAngle": 0.0, "endAngle": 30.0, "innerRadius": 0.55, "outerRadius": 0.95 },
+    { "name": "Pleura", "startAngle": 15.0, "endAngle": 35.0, "innerRadius": 0.85, "outerRadius": 0.95 },
+
+
+    { "name": "Spleen", "startAngle": 45.0, "endAngle": 55.0, "innerRadius": 0.75, "outerRadius": 0.95 },
+    { "name": "Hand / Arm", "startAngle": 40.0, "endAngle": 60.0, "innerRadius": 0.65, "outerRadius": 0.75 },
+    { "name": "Thorax / Ribs", "startAngle": 30.0, "endAngle": 50.0, "innerRadius": 0.85, "outerRadius": 1.0 },
+
+
+    { "name": "Ovary / Testes", "startAngle": 65.0, "endAngle": 75.0, "innerRadius": 0.75, "outerRadius": 0.95 },
+    { "name": "Pelvis", "startAngle": 75.0, "endAngle": 90.0, "innerRadius": 0.80, "outerRadius": 1.0 },
+    { "name": "Lower Abdomen", "startAngle": 60.0, "endAngle": 85.0, "innerRadius": 0.55, "outerRadius": 0.75 },
+
+
+    { "name": "Kidney", "startAngle": 85.0, "endAngle": 100.0, "innerRadius": 0.70, "outerRadius": 1.0 },
+    { "name": "Adrenal", "startAngle": 88.0, "endAngle": 95.0, "innerRadius": 0.60, "outerRadius": 0.70 },
+    { "name": "Knee / Foot / Thigh", "startAngle": 95.0, "endAngle": 115.0, "innerRadius": 0.75, "outerRadius": 0.95 },
+
+
+    { "name": "Bladder", "startAngle": 125.0, "endAngle": 140.0, "innerRadius": 0.55, "outerRadius": 0.75 },
+    { "name": "Rectum", "startAngle": 115.0, "endAngle": 125.0, "innerRadius": 0.55, "outerRadius": 0.75 },
+    { "name": "Anus", "startAngle": 118.0, "endAngle": 122.0, "innerRadius": 0.40, "outerRadius": 0.55 },
+
+
+    { "name": "Scapula", "startAngle": 155.0, "endAngle": 170.0, "innerRadius": 0.70, "outerRadius": 0.85 },
+    { "name": "Back (Upper/Middle/Lower)", "startAngle": 140.0, "endAngle": 175.0, "innerRadius": 0.85, "outerRadius": 1.0 },
+    { "name": "Esophagus", "startAngle": 165.0, "endAngle": 175.0, "innerRadius": 0.45, "outerRadius": 0.65 },
+
+
+    { "name": "Thyroid", "startAngle": 185.0, "endAngle": 200.0, "innerRadius": 0.65, "outerRadius": 0.90 },
+    { "name": "Trachea", "startAngle": 180.0, "endAngle": 190.0, "innerRadius": 0.45, "outerRadius": 0.65 },
+    { "name": "Larynx / Pharynx", "startAngle": 195.0, "endAngle": 210.0, "innerRadius": 0.65, "outerRadius": 0.85 },
+
+
+    { "name": "Upper Jaw", "startAngle": 215.0, "endAngle": 230.0, "innerRadius": 0.65, "outerRadius": 0.85 },
+    { "name": "Lower Jaw", "startAngle": 215.0, "endAngle": 230.0, "innerRadius": 0.50, "outerRadius": 0.65 },
+    { "name": "Nose / Tongue / Mouth", "startAngle": 210.0, "endAngle": 225.0, "innerRadius": 0.75, "outerRadius": 0.95 },
+
+
+    { "name": "Eye", "startAngle": 235.0, "endAngle": 245.0, "innerRadius": 0.70, "outerRadius": 0.85 },
+    { "name": "Temple", "startAngle": 240.0, "endAngle": 255.0, "innerRadius": 0.85, "outerRadius": 1.0 },
+    { "name": "Forehead", "startAngle": 250.0, "endAngle": 270.0, "innerRadius": 0.85, "outerRadius": 1.0 }
+  ]
 }

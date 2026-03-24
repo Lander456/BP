@@ -194,9 +194,9 @@ public class IrisMapRepositoryTests {
     }
 
     /**
-     * This test attempts to delete an IrisMap from the database
+     * This test attempts to deleteById an IrisMap from the database
      *
-     * @throws AssertionError if it fails to delete and fetches the IrisMap after its deletion
+     * @throws AssertionError if it fails to deleteById and fetches the IrisMap after its deletion
      * @see IrisMap
      * @see IrisMapRepository
      */

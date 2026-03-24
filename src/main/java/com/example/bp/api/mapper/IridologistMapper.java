@@ -16,4 +16,8 @@ public interface IridologistMapper {
     Iridologist toEntity(@Nonnull IridologistUpdateDto dto);
     IridologistDetailDto toDetailDto(@Nonnull Iridologist entity);
     List<IridologistListDto> toListDtoList(List<Iridologist> entities);
+
+    default <T> T mapOptional(java.util.Optional<T> optional) {
+        return optional.isPresent() ? optional.orElse(null) : null;
+    }
 }

@@ -171,7 +171,7 @@ public class IridologistRepositoryTests {
     }
 
     /**
-     * This test attempts to delete an iridologist from the database using the IridologistRepository
+     * This test attempts to deleteById an iridologist from the database using the IridologistRepository
      *
      * @see Iridologist
      * @see IridologistRepository

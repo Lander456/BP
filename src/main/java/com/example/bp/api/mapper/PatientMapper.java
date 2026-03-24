@@ -16,4 +16,8 @@ public interface PatientMapper {
     Patient toEntity(@Nonnull PatientCreateDto dto);
     PatientDetailDto toDetailDto(@Nonnull Patient entity);
     List<PatientListDto> toListDtoList(List<Patient> entities);
+
+    default <T> T mapOptional(java.util.Optional<T> optional) {
+        return optional.isPresent() ? optional.orElse(null) : null;
+    }
 }

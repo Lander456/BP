@@ -205,7 +205,7 @@ public class IrisImageRepositoryTests {
     }
 
     /**
-     * This test attempts to delete an irisImage from the database using the IrisImageRepository
+     * This test attempts to deleteById an irisImage from the database using the IrisImageRepository
      *
      * @see IrisImage
      * @see IrisImageRepository
