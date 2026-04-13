@@ -8,37 +8,36 @@ import org.jspecify.annotations.NonNull;
 import org.opencv.core.*;
 import org.opencv.highgui.HighGui;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.CLAHE;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
 import org.opencv.photo.Photo;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class IrisComputerVisionEngine {
     public void previewImage(String path) {
-        // 1. Load original
         Mat source = Imgcodecs.imread(path);
         if (source.empty()) {
             System.err.println("Error: could not load image at: " + path);
             return;
         }
 
-        // 2. Run the detection logic
         Mat gray = new Mat();
         Imgproc.cvtColor(source, gray, Imgproc.COLOR_BGR2GRAY);
 
         try {
             Circle pupil = findPupil(gray);
+
+            Circle irisBoundary = findIrisBoundary(gray, pupil);
+
             Mat normalizedStrip = unwrap(gray, pupil);
 
             Mat detectionMap = source.clone();
+
             Imgproc.circle(detectionMap, pupil.center(), (int) pupil.radius(), new org.opencv.core.Scalar(0, 255, 0), 3);
-            Imgproc.circle(detectionMap, pupil.center(), 5, new org.opencv.core.Scalar(0, 0, 255), -1);
+            Imgproc.circle(detectionMap, pupil.center(), (int) irisBoundary.radius(), new org.opencv.core.Scalar(0, 0, 255), 3);
 
             String detWin = "1. Pupil Detection";
             HighGui.namedWindow(detWin, HighGui.WINDOW_NORMAL);
@@ -79,6 +78,7 @@ public class IrisComputerVisionEngine {
     private Circle findPupil(Mat gray) {
 
         Mat workingCopy = new Mat();
+
         gray.copyTo(workingCopy);
 
         Point roughCentre = findRoughCentre(gray);
@@ -89,19 +89,17 @@ public class IrisComputerVisionEngine {
         int startY = (int) Math.max(0, roughCentre.y - boxSize / 2.0);
         int actualWidth = Math.min(boxSize, workingCopy.cols() - startX);
         int actualHeight = Math.min(boxSize, workingCopy.rows() - startY);
-        Rect roi = new Rect(startX, startY, actualWidth, actualHeight);
 
+        Rect roi = new Rect(startX, startY, actualWidth, actualHeight);
         Mat eyeROI = new Mat(workingCopy, roi);
         removeGlint(eyeROI);
 
-        debugShowImg(eyeROI, "DEBUG");
-
         Point initialCenter = new Point(eyeROI.cols()/2.0, eyeROI.rows()/2.0);
-        int wobbleRange = 15;
+        int wobbleRange = eyeROI.cols() / 10;
         int step = 2;
 
-        int minR = 15;
-        int maxR = (int) (eyeROI.cols() * 0.3);
+        int minR = (int) (eyeROI.cols() * 0.2);
+        int maxR = (int) (eyeROI.cols() * 0.6);
 
         double bestX = initialCenter.x;
         double bestY = initialCenter.y;
@@ -139,7 +137,10 @@ public class IrisComputerVisionEngine {
 
         debugShowImg(eyeROI, "PUPIL FOUND");
 
-        Imgproc.bilateralFilter(workingCopy, workingCopy, 9, 75, 75);
+        Mat filtered = new Mat();
+        Imgproc.bilateralFilter(workingCopy, filtered, 9, 75, 75);
+        filtered.copyTo(workingCopy);
+        filtered.release();
 
         Point actualCenter = new Point(roi.x + finalCenter.x, roi.y + finalCenter.y);
 
@@ -164,7 +165,7 @@ public class IrisComputerVisionEngine {
 
     private Point findRoughCentre(Mat gray) {
         Mat small = new Mat();
-        Imgproc.resize(gray, small, new Size(gray.cols()/4, gray.rows()/4));
+        Imgproc.resize(gray, small, new Size(gray.cols()/4.0, gray.rows()/4.0));
 
         Imgproc.threshold(small, small, 50, 255, Imgproc.THRESH_BINARY_INV);
 
@@ -178,7 +179,7 @@ public class IrisComputerVisionEngine {
             return new Point(x, y);
         }
 
-        return new Point(gray.cols()/2, gray.rows()/2);
+        return new Point(gray.cols()/2.0, gray.rows()/2.0);
     }
 
     private void removeGlint(Mat eyeROI) {
@@ -213,5 +214,30 @@ public class IrisComputerVisionEngine {
         HighGui.resizeWindow(winName, 1000, 300);
         HighGui.imshow(winName, img);
         HighGui.waitKey(0);
+    }
+
+    private Circle findIrisBoundary(Mat gray, Circle pupil) {
+        int wobble = 20;
+        double maxJump = -1;
+
+        Circle bestIris = new Circle(pupil.center(), pupil.radius() * 2.5);
+
+        for (int ox = -wobble; ox <= wobble; ox += 4) {
+            for (int oy = -wobble; oy <= wobble; oy +=4) {
+                Point testCenter = new Point(pupil.center().x + ox, pupil.center().y + oy);
+
+                for (int r = (int)(pupil.radius() * 1.5); r < (int)(pupil.radius() * 4.0); r += 2) {
+                    double v1 = getCircleAverage(gray, testCenter, r);
+                    double v2 = getCircleAverage(gray, testCenter, r + 5);
+
+                    double jump = v2 - v1;
+                    if (jump > maxJump) {
+                        maxJump = jump;
+                        bestIris = new Circle(testCenter, r);
+                    }
+                }
+            }
+        }
+        return bestIris;
     }
 }
