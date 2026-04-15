@@ -8,6 +8,7 @@ import org.jspecify.annotations.NonNull;
 import org.opencv.core.*;
 import org.opencv.highgui.HighGui;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.CLAHE;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
 import org.opencv.photo.Photo;
@@ -32,22 +33,20 @@ public class IrisComputerVisionEngine {
 
             Circle irisBoundary = findIrisBoundary(gray, pupil);
 
-            Mat normalizedStrip = unwrap(gray, pupil);
+            Mat normalizedStrip = unwrap(gray, pupil, irisBoundary);
 
             Mat detectionMap = source.clone();
 
             Imgproc.circle(detectionMap, pupil.center(), (int) pupil.radius(), new org.opencv.core.Scalar(0, 255, 0), 3);
             Imgproc.circle(detectionMap, pupil.center(), (int) irisBoundary.radius(), new org.opencv.core.Scalar(0, 0, 255), 3);
 
-            String detWin = "1. Pupil Detection";
-            HighGui.namedWindow(detWin, HighGui.WINDOW_NORMAL);
-            HighGui.resizeWindow(detWin, 800, 600);
-            HighGui.imshow(detWin, detectionMap);
+            debugShowImg(detectionMap, "1. Pupil Detection");
 
-            String stripWin = "2. Unwrapped Iris (Normalized)";
-            HighGui.namedWindow(stripWin, HighGui.WINDOW_NORMAL);
-            HighGui.resizeWindow(stripWin, 1000, 300);
-            HighGui.imshow(stripWin, normalizedStrip);
+            debugShowImg(normalizedStrip, "2. Unwrapped Iris (Normalized)");
+
+            Mat cleanedStrip = cleanupStrip(normalizedStrip);
+
+            debugShowImg(cleanedStrip, "3. Cleaned Iris strip");
 
             System.out.println("Windows open. Press any key in a window to close and exit.");
             HighGui.waitKey(0);
@@ -70,7 +69,9 @@ public class IrisComputerVisionEngine {
 
         Circle pupil = findPupil(gray);
 
-        Mat normalisedStrip = unwrap(gray, pupil);
+        Circle irisBoundary = findIrisBoundary(gray, pupil);
+
+        Mat normalisedStrip = unwrap(gray, pupil, irisBoundary);
 
         return detectArtifacts(normalisedStrip, map);
     }
@@ -195,14 +196,34 @@ public class IrisComputerVisionEngine {
         kernel.release();
     }
 
-    private @NonNull Mat unwrap(@NonNull Mat gray, @NonNull Circle pupil) {
-        int irisRadius = (int) (pupil.radius() * 2.5);
+    private @NonNull Mat unwrap(@NonNull Mat gray, @NonNull Circle pupil, @NonNull Circle irisBoundary) {
+        int width = 360;
+        int height = 500;
+        Mat normalised = new Mat(height, width, CvType.CV_8UC1);
 
-        Mat out = new Mat((int) (irisRadius - pupil.radius()), 360, gray.type());
+        for (int theta = 0; theta < width; theta++) {
+            double angle = Math.toRadians(theta);
+            double cos = Math.cos(angle);
+            double sin = Math.sin(angle);
 
-        Imgproc.warpPolar(gray, out, out.size(), pupil.center(), irisRadius, Imgproc.WARP_POLAR_LINEAR);
+            for (int r = 0; r < height; r++) {
+                double h = (double) r / height;
 
-        return out;
+                double pX = pupil.center().x + pupil.radius() * cos;
+                double pY = pupil.center().y + pupil.radius() * sin;
+                double iX = irisBoundary.center().x + irisBoundary.radius() * cos;
+                double iY = irisBoundary.center().y + irisBoundary.radius() * sin;
+
+                int srcX = (int) (pX + h * (iX - pX));
+                int srcY = (int) (pY + h * (iY - pY));
+
+                if (srcX >= 0 && srcX < gray.cols() && srcY >= 0 && srcY < gray.rows()) {
+                    normalised.put(r, theta, gray.get(srcY, srcX));
+                }
+            }
+        }
+
+        return normalised;
     }
 
     private List<IrisFinding> detectArtifacts(Mat normalisedStrip, IrisMap map) {
@@ -210,9 +231,12 @@ public class IrisComputerVisionEngine {
     }
 
     private void debugShowImg(Mat img, String winName) {
+        Mat displayImg = new Mat();
+        img.copyTo(displayImg);
+
         HighGui.namedWindow(winName, HighGui.WINDOW_NORMAL);
         HighGui.resizeWindow(winName, 1000, 300);
-        HighGui.imshow(winName, img);
+        HighGui.imshow(winName, displayImg);
         HighGui.waitKey(0);
     }
 
@@ -239,5 +263,12 @@ public class IrisComputerVisionEngine {
             }
         }
         return bestIris;
+    }
+
+    private @NonNull Mat cleanupStrip(Mat strip) {
+        Mat cleaned = new Mat();
+        CLAHE clahe = Imgproc.createCLAHE(2.0, new Size(8, 8));
+        clahe.apply(strip, cleaned);
+        return cleaned;
     }
 }
