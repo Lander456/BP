@@ -40,7 +40,7 @@ public class IrisFinding {
         this.artifact = artifact;
         this.geometryJson = geometryJson;
         this.isGenerated = false;
-        this.confidenceScore = 1.0;
+        this.confidenceScore = null;
         this.isValidated = true;
     }
 }

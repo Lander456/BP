@@ -12,6 +12,7 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +40,8 @@ public class IrisFindingRepositoryTests {
     void setUp() {
         irisImage = new IrisImage("imageUrl");
         irisImage.setStoragePath("imageStoragePath");
+        irisImage.setUploadedAt(LocalDateTime.now());
+
         artifact1 = new Artifact("artifact1", "artifact1Description", "ARTIFACT-01");
         artifact2 = new Artifact("artifact2", "artifact2Description", "ARTIFACT-02");
         irisSector = new IrisSector("irisSector", 25.0, 360.0);

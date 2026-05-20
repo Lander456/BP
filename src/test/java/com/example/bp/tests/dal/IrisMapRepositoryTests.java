@@ -11,6 +11,7 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,6 +56,11 @@ public class IrisMapRepositoryTests {
         irisMap3 = new IrisMap("thirdIrisMapUrl");
         irisMap4 = new IrisMap("fourthIrisMapUrl");
 
+        irisMap1.setUploadedAt(LocalDateTime.now());
+        irisMap2.setUploadedAt(LocalDateTime.now());
+        irisMap3.setUploadedAt(LocalDateTime.now());
+        irisMap4.setUploadedAt(LocalDateTime.now());
+
         irisMap1.setStoragePath("firstMapStoragePath");
         irisMap2.setStoragePath("secondMapStoragePath");
         irisMap3.setStoragePath("thirdMapStoragePath");
@@ -86,6 +92,7 @@ public class IrisMapRepositoryTests {
     @Test
     void saveNewIrisMap() {
         IrisMap newIrisMap = new IrisMap("newIrisMapLink");
+        newIrisMap.setUploadedAt(LocalDateTime.now());
         newIrisMap.setStoragePath("someStoragePath");
 
         IrisMap savedIrisMap = irisMapRepository.save(newIrisMap);

@@ -61,7 +61,7 @@ public class ArtifactRepositoryTests {
 
     @Test
     void getNonExistentArtifactById() {
-        Optional<Artifact> artifact = artifactRepository.findById((long) 9999);
+        Optional<Artifact> artifact = artifactRepository.findById((Long) 9999L);
 
         assertTrue(artifact.isEmpty());
     }

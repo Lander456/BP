@@ -58,6 +58,11 @@ public class IrisImageRepositoryTests {
         image1PatientOne = new IrisImage("irisImageUrl3");
         image2PatientOne = new IrisImage("irisImageUrl4");
 
+        image1PatientZero.setUploadedAt(LocalDateTime.now());
+        image2PatientZero.setUploadedAt(LocalDateTime.now());
+        image1PatientOne.setUploadedAt(LocalDateTime.now());
+        image2PatientOne.setUploadedAt(LocalDateTime.now());
+
         image1PatientZero.setPatient(patientZero);
         image2PatientZero.setPatient(patientZero);
         image1PatientOne.setPatient(patientOne);
@@ -89,6 +94,7 @@ public class IrisImageRepositoryTests {
     void saveUniqueIrisImage() {
         IrisImage irisImage = new IrisImage("newImageUrl");
 
+        irisImage.setUploadedAt(LocalDateTime.now());
         irisImage.setStoragePath("newStorage");
         irisImage.setPatient(patientZero);
 
