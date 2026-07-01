@@ -1,5 +1,6 @@
 package com.example.bp.tests.dal;
 
+import com.example.bp.common.Sex;
 import com.example.bp.dal.entity.IrisImage;
 import com.example.bp.dal.entity.Patient;
 import com.example.bp.dal.repository.IrisImageRepository;
@@ -51,8 +52,8 @@ public class IrisImageRepositoryTests {
     /// setup method executed before each test to ensure database is reset to this state and populated with certain data
     @BeforeEach
     void setUp() {
-        patientZero = new Patient("Patient", "Zero", (byte) 69, "999999/99", true);
-        patientOne = new Patient("Patient", "One", (byte) 50, "999999/99", false);
+        patientZero = new Patient("Patient", "Zero", (byte) 69, "999999/99", Sex.MALE);
+        patientOne = new Patient("Patient", "One", (byte) 50, "999999/99", Sex.FEMALE);
         image1PatientZero = new IrisImage("irisImageUrl1");
         image2PatientZero = new IrisImage("irisImageUrl2");
         image1PatientOne = new IrisImage("irisImageUrl3");

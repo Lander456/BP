@@ -3,6 +3,7 @@ package com.example.bp.service.impl;
 import com.example.bp.api.dto.*;
 import com.example.bp.api.mapper.IrisMapMapper;
 import com.example.bp.api.mapper.IrisSectorMapper;
+import com.example.bp.dal.entity.Iridologist;
 import com.example.bp.dal.entity.IrisMap;
 import com.example.bp.dal.entity.IrisSector;
 import com.example.bp.dal.repository.IridologistRepository;
@@ -43,6 +44,9 @@ public class IrisMapServiceImpl implements IrisMapService {
 
     @Override
     public IrisMapDetailDto create(@NonNull IrisMapCreateDto dto, MultipartFile file) {
+        Iridologist iridologist = iridologistRepository.findById(dto.iridologistId()).
+                orElseThrow(() -> new EntityNotFoundException("Failed to fetch Iridologist from DB with id: " + dto.iridologistId()));
+
         String fileName = fileStorageService.save(file);
         String path = "uploads/iris-maps/" + fileName;
 
@@ -52,8 +56,7 @@ public class IrisMapServiceImpl implements IrisMapService {
         irisMap.setContentType(file.getContentType());
         irisMap.setUploadedAt(LocalDateTime.now());
 
-        irisMap.setIridologist(iridologistRepository.findById(dto.iridologistId()).
-                orElseThrow(() -> new EntityNotFoundException("Failed to fetch Iridologist from DB with id: " + dto.iridologistId())));
+        irisMap.setIridologist(iridologist);
 
         if (dto.sectors() != null) {
             dto.sectors().forEach(irisSectorDto -> {

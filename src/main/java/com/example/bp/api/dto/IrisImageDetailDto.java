@@ -1,5 +1,7 @@
 package com.example.bp.api.dto;
 
+import com.example.bp.common.Sex;
+
 public record IrisImageDetailDto(
         Long id,
         String imageUrl,
@@ -9,5 +11,5 @@ public record IrisImageDetailDto(
         String patientFirstName,
         String patientLastName,
         Byte patientAge,
-        Boolean patientSex
+        Sex patientSex
 ) { }

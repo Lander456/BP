@@ -1,5 +1,6 @@
 package com.example.bp.dal.repository;
 
+import com.example.bp.common.Sex;
 import com.example.bp.dal.entity.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -12,5 +13,5 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
     List<Patient> findByLastName(String lastName);
     List<Patient> findByAge(byte age);
     List<Patient> findByBirthNum(String birthNum);
-    List<Patient> findBySex(Boolean sex);
+    List<Patient> findBySex(Sex sex);
 }

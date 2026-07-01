@@ -1,5 +1,6 @@
 package com.example.bp.tests.dal;
 
+import com.example.bp.common.Sex;
 import com.example.bp.dal.entity.Iridologist;
 import com.example.bp.dal.entity.Patient;
 import com.example.bp.dal.repository.PatientRepository;
@@ -42,8 +43,8 @@ public class PatientRepositoryTests {
      */
     @BeforeEach
     void setUp() {
-        patientZero = new Patient("Patient", "Zero", (byte) 80, "99999/99", true);
-        patientOne = new Patient("Patient", "One", (byte) 33, "9999/999", false);
+        patientZero = new Patient("Patient", "Zero", (byte) 80, "99999/99", Sex.MALE);
+        patientOne = new Patient("Patient", "One", (byte) 33, "9999/999", Sex.FEMALE);
         iridologist = new Iridologist("Jane", "Doe", "janedoe", "interestingpass");
 
         patientZero.setIridologist(iridologist);
@@ -68,7 +69,7 @@ public class PatientRepositoryTests {
      */
     @Test
     void createNewPatient() {
-        Patient newPatient = new Patient("New", "Patient", (byte) 70, "22222/22", true);
+        Patient newPatient = new Patient("New", "Patient", (byte) 70, "22222/22", Sex.MALE);
         newPatient.setIridologist(iridologist);
 
         Patient saved = patientRepository.saveAndFlush(newPatient);
@@ -166,7 +167,7 @@ public class PatientRepositoryTests {
 
     @Test
     void getPatientsBySex() {
-        List<Patient> foundPatients = patientRepository.findBySex(true);
+        List<Patient> foundPatients = patientRepository.findBySex(Sex.MALE);
 
         assertThat(foundPatients).containsExactlyInAnyOrder(patientZero);
     }
