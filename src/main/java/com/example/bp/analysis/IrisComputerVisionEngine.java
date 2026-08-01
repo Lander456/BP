@@ -271,4 +271,6 @@ public class IrisComputerVisionEngine {
         clahe.apply(strip, cleaned);
         return cleaned;
     }
+
+    private void overlayMapOnStrip(Mat irisStrip, )
 }
