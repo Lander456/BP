@@ -1,5 +1,6 @@
 package com.example.bp.exception;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,5 +22,15 @@ public class GlobalExceptionHandler {
         );
 
         return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleEntityNotFound(EntityNotFoundException ex) {
+        ApiErrorResponse error = new ApiErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage()
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 }
