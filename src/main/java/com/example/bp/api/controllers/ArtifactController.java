@@ -20,19 +20,19 @@ public class ArtifactController {
         this.artifactService = artifactService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<ArtifactListDto>> getAllArtifacts() {
         List<ArtifactListDto> artifactListDto = artifactService.getAll();
         return ResponseEntity.ok(artifactListDto);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<ArtifactDetailDto> getArtifactById(@PathVariable Long id) {
         ArtifactDetailDto artifactDetailDto = artifactService.getById(id);
         return ResponseEntity.ok(artifactDetailDto);
     }
 
-    @GetMapping("/{labelCode}")
+    @GetMapping("/label/{labelCode}")
     public ResponseEntity<ArtifactDetailDto> getByLabelCode(@PathVariable String labelCode) {
         ArtifactDetailDto artifactDetailDto = artifactService.getByLabelCode(labelCode);
         return ResponseEntity.ok(artifactDetailDto);
