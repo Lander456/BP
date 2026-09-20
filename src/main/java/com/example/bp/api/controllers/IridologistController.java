@@ -26,7 +26,7 @@ public class IridologistController {
         return ResponseEntity.ok(iridologistDetailDto);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<IridologistDetailDto> getIridologist(@PathVariable Long id) {
         IridologistDetailDto detailDto = iridologistService.getById(id);
         return ResponseEntity.ok(detailDto);
@@ -38,19 +38,19 @@ public class IridologistController {
         return ResponseEntity.ok(listDtos);
     }
 
-    @GetMapping("/{firstName}")
+    @GetMapping("/firstName/{firstName}")
     public ResponseEntity<List<IridologistListDto>> getIridologistsByFirstName(@PathVariable String firstName) {
         List<IridologistListDto> listDtos = iridologistService.getByFirstName(firstName);
         return ResponseEntity.ok(listDtos);
     }
 
-    @GetMapping("/{lastName}")
+    @GetMapping("/lastName/{lastName}")
     public ResponseEntity<List<IridologistListDto>> getIridologistsByLastName(@PathVariable String lastName) {
         List<IridologistListDto> listDtos = iridologistService.getByLastName(lastName);
         return ResponseEntity.ok(listDtos);
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/username/{username}")
     public ResponseEntity<IridologistDetailDto> getIridologistByUsername(@PathVariable String username) {
         IridologistDetailDto detailDto = iridologistService.getByUsername(username);
         return ResponseEntity.ok(detailDto);

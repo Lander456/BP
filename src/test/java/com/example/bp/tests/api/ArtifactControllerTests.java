@@ -17,6 +17,9 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -140,8 +143,33 @@ public class ArtifactControllerTests {
     }
 
     @Test
-    void deleteArtifactShouldReturn200WhenSuccessful() throws Exception {
+    void updateArtifactShouldReturn404WhenNotFound() throws Exception {
+        ArtifactUpdateDto updateDto = new ArtifactUpdateDto(99L, "artifactName", "artifactDescription");
+        when(artifactService.update(any(ArtifactUpdateDto.class)))
+                .thenThrow(new EntityNotFoundException("Artifact not found"));
+
+        mockMvc.perform(patch("/api/artifact/update")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateDto)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Artifact not found"));
+    }
+
+    @Test
+    void deleteArtifactShouldReturn204WhenSuccessful() throws Exception {
+        doNothing().when(artifactService).delete(1L);
+
         mockMvc.perform(delete("/api/artifact/delete/1"))
-                .andExpect(status().is2xxSuccessful());
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteArtifactShouldReturn404WhenNotFound() throws Exception {
+        doThrow(new EntityNotFoundException("Artifact not found"))
+                .when(artifactService).delete(1L);
+
+        mockMvc.perform(delete("/api/artifact/delete/1"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Artifact not found"));
     }
 }
