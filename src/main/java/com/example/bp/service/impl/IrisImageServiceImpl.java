@@ -17,6 +17,7 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Paths;
 import java.util.List;
 
 @Service
@@ -44,7 +45,7 @@ public class IrisImageServiceImpl implements IrisImageService {
         irisImage.setOriginalFileName(file.getOriginalFilename());
         irisImage.setContentType(file.getContentType());
 
-        irisImage.setStoragePath("uploads/scans/" + savedFileName);
+        irisImage.setStoragePath("uploads/iris-scans/" + savedFileName);
         irisImage.setImageUrl("/api/images/scans/" + savedFileName);
 
         IrisImage saved = irisImageRepository.save(irisImage);
@@ -71,6 +72,14 @@ public class IrisImageServiceImpl implements IrisImageService {
 
     @Override
     public void delete(Long id) {
+        IrisImage irisImage = irisImageRepository.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("Iris image not found with ID: " + id));
+
+        if (irisImage.getStoragePath() != null) {
+            String fileName = Paths.get(irisImage.getStoragePath()).getFileName().toString();
+            fileStorageService.delete(fileName);
+        }
+        
         irisImageRepository.deleteById(id);
     }
 }

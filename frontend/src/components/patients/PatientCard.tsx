@@ -4,6 +4,7 @@ import styles from "./PatientCard.module.css"
 import {ChevronDown, ChevronUp} from "lucide-react";
 import {patientService} from "../../api";
 import {Button} from "../common/Button.tsx";
+import {Link} from "react-router-dom";
 
 interface PatientCardProps {
     patient: PatientListDto;
@@ -108,7 +109,7 @@ export const PatientCard: React.FC<PatientCardProps> = ({
                                 </label>
                                 <input
                                     name="firstName"
-                                    value={formValues.firstName}
+                                    value={formValues.firstName ?? ''}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -118,7 +119,7 @@ export const PatientCard: React.FC<PatientCardProps> = ({
                                 </label>
                                 <input
                                     name="lastName"
-                                    value={formValues.lastName}
+                                    value={formValues.lastName ?? ''}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -128,7 +129,7 @@ export const PatientCard: React.FC<PatientCardProps> = ({
                                 </label>
                                 <input
                                     name="birthNum"
-                                    value={formValues.birthNum}
+                                    value={formValues.birthNum ?? ''}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -139,6 +140,9 @@ export const PatientCard: React.FC<PatientCardProps> = ({
                                 <Button type="submit" disabled={isSaving} className={styles.saveBtn}>
                                     {isSaving ? 'Saving...' : 'Save'}
                                 </Button>
+                                <Link to={`/patients/${patient.id}`} className={styles.viewImagesLink}>
+                                    View Iris Images
+                                </Link>
                             </div>
                         </form>
                     )}

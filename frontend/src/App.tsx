@@ -4,6 +4,7 @@ import {ProtectedRoute} from "./components/ProtectedRoute.tsx";
 import {LoginPage} from "./pages/auth/LoginPage.tsx";
 import {PatientListPage} from "./pages/patients/PatientListPage.tsx";
 import {AppLayout} from "./components/layout/AppLayout.tsx";
+import {PatientDetailPage} from "./pages/patients/PatientDetailPage.tsx";
 
 function App() {
     return (
@@ -16,10 +17,11 @@ function App() {
                       <Route element={<AppLayout />}>
                           <Route path='/' element={<Navigate to='patients' replace />} />
                           <Route path='/patients' element={<PatientListPage />} />
+                          <Route path='/patients/:id' element={<PatientDetailPage />} />
                       </Route>
                   </Route>
 
-                  <Route path="*" element={<Navigate to="/login" replace />} />
+                  <Route path="*" element={<Navigate to="/patients" replace />} />
               </Routes>
           </BrowserRouter>
       </AuthProvider>

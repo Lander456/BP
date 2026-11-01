@@ -7,6 +7,7 @@ import com.example.bp.api.dto.IrisImageUpdateDto;
 import com.example.bp.dal.entity.IrisImage;
 import jakarta.annotation.Nonnull;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
@@ -15,5 +16,9 @@ public interface IrisImageMapper {
     IrisImage toEntity(@Nonnull IrisImageCreateDto dto);
     IrisImage toEntity(@Nonnull IrisImageUpdateDto dto);
     IrisImageDetailDto toDetailDto(@Nonnull IrisImage entity);
+
+    @Mapping(target = "label", source = "originalFileName")
+    IrisImageListDto toListDto(IrisImage entity);
+
     List<IrisImageListDto> toListDtoList(List<IrisImage> entities);
 }

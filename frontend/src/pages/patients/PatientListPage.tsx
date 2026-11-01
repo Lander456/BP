@@ -3,11 +3,14 @@ import type {PatientListDto} from "../../types";
 import {patientService} from "../../api";
 import styles from "./PatientDetailPage.module.css"
 import {PatientCard} from "../../components/patients/PatientCard.tsx";
+import {CreatePatientModal} from "../../components/patients/CreatePatientModal.tsx";
+import {Plus} from "lucide-react";
 
 export const PatientListPage: React.FC = () => {
     const [patients, setPatients] = useState<PatientListDto[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false);
 
     const loadPatients = async () => {
         try {
@@ -32,6 +35,12 @@ export const PatientListPage: React.FC = () => {
                 <h1 className={styles.title}>
                     Patients
                 </h1>
+                <button
+                    type="button"
+                    onClick={() => setIsCreateOpen(true)}
+                >
+                    <Plus size={18} /> New Patient
+                </button>
             </div>
 
             {isLoading && (
@@ -63,6 +72,12 @@ export const PatientListPage: React.FC = () => {
                     ))}
                 </div>
             )}
+
+            <CreatePatientModal
+                isOpen={isCreateOpen}
+                onClose={() => setIsCreateOpen(false)}
+                onPatientCreated={loadPatients}
+            />
         </div>
     );
 };
